@@ -1,6 +1,6 @@
 package dev.techmentordefensebe.user.domain;
 
-import dev.techmentordefensebe.user.enumtype.OauthProvider;
+import dev.techmentordefensebe.oauth.enumtype.OauthProvider;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -32,12 +32,15 @@ public class User {
     @Column(name = "nickname")
     private String nickname;
 
+    @Column(name = "oauth_provider_unique_key", nullable = false, unique = true)
+    private String oauthProviderUniqueKey;
+
     @Enumerated(value = EnumType.STRING)
     @Column(name = "oauth_login_type", nullable = false)
     private OauthProvider oauthLoginType;
 
-    @Column(name = "profile_image_url")
-    private String profileImageUrl;
+    @Column(name = "profile_img_url")
+    private String profileImgUrl;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)
