@@ -6,13 +6,16 @@ public record OauthLoginResponse(
         String oauthProviderUniqueKey,
         String email,
         String nickname,
+        String profileImgUrl,
         boolean isRegistered
 ) {
-    public static OauthLoginResponse of(OauthUserInfo oauthUserInfo, boolean isRegistered) {
+    public static OauthLoginResponse from(OauthUserInfo oauthUserInfo, boolean isRegistered) {
         return new OauthLoginResponse(
                 oauthUserInfo.getProviderId(),
                 oauthUserInfo.getEmail(),
                 oauthUserInfo.getNickname(),
-                isRegistered);
+                oauthUserInfo.getProfileImgUrl(),
+                isRegistered
+        );
     }
 }
