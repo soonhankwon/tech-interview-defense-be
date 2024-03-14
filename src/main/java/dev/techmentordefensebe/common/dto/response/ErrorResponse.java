@@ -17,4 +17,12 @@ public record ErrorResponse(
                                 errorCode.getMessage())
                 );
     }
+
+    public static ErrorResponse from(CustomException exception) {
+        ErrorCode errorCode = exception.getErrorCode();
+        return new ErrorResponse(
+                errorCode.getCode(),
+                errorCode.getMessage()
+        );
+    }
 }
