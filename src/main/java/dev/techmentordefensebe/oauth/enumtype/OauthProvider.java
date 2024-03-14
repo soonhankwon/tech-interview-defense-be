@@ -8,13 +8,14 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum OauthProvider {
     KAKAO("kakao"),
-    GOOGLE("google");
+    GOOGLE("google"),
+    NONE("none");
 
-    private final String value;
+    private final String name;
 
     public static void validateProvider(String provider) {
         boolean isValidProvider = Arrays.stream(OauthProvider.values())
-                .map(OauthProvider::getValue)
+                .map(OauthProvider::getName)
                 .anyMatch(i -> i.equals(provider));
 
         if (!isValidProvider) {
