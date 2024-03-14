@@ -31,17 +31,18 @@ public class OauthServiceImpl implements OauthService {
             throw new IllegalArgumentException("provider can't null or empty");
         }
         OauthProvider.validateProvider(provider);
-        assert provider.equals(OauthProvider.KAKAO.getValue()) || provider.equals(OauthProvider.GOOGLE.getValue());
+        assert provider.equals(OauthProvider.KAKAO.getName()) || provider.equals(OauthProvider.GOOGLE.getName());
         // application.yml에 등록된 해당 provider(kakao, google)의 Oauth 메타정보를 불러온다.
         ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId(provider);
         OauthTokenDTO oauthToken = getOauthToken(code, clientRegistration);
 
-        OauthUserInfoImpl oauthUserInfo = getUserInfoFromKakao(provider, oauthToken, clientRegistration);
+        OauthUserInfoImpl oauthUserInfo = getUserInfoFromOauth(provider, oauthToken, clientRegistration);
         String oauthProviderUniqueKey = oauthUserInfo.getProviderId();
 
         //isRegistered: 서비스에 이미 가입된 유저인지 여부
         boolean isRegistered = userRepository.existsByOauthProviderUniqueKey(oauthProviderUniqueKey);
-        return OauthLoginResponse.of(oauthUserInfo, isRegistered);
+        //oauth 사용자 정보와 서비스 가입여부를 프론트에 응답해줌
+        return OauthLoginResponse.from(oauthUserInfo, isRegistered);
     }
 
     private OauthTokenDTO getOauthToken(String code, ClientRegistration clientRegistration) {
@@ -68,7 +69,7 @@ public class OauthServiceImpl implements OauthService {
         return formData;
     }
 
-    private OauthUserInfoImpl getUserInfoFromKakao(String provider, OauthTokenDTO oauthToken,
+    private OauthUserInfoImpl getUserInfoFromOauth(String provider, OauthTokenDTO oauthToken,
                                                    ClientRegistration clientRegistration) {
         Map<String, Object> userAttributes = getUserAttribute(clientRegistration, oauthToken);
         return new OauthUserInfoImpl(userAttributes, provider);
