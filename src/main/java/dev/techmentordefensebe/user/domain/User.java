@@ -1,6 +1,7 @@
 package dev.techmentordefensebe.user.domain;
 
 import dev.techmentordefensebe.oauth.enumtype.OauthProvider;
+import dev.techmentordefensebe.user.dto.UserAddRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -21,6 +22,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 @Entity
 @Table(name = "`user`")
 public class User {
+
+    private static final String DEFAULT_NICKNAME = "Anonymous";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,4 +52,20 @@ public class User {
     @LastModifiedDate
     @Column(name = "modified_at", nullable = false)
     private LocalDateTime modifiedAt;
+
+    public User(UserAddRequest request) {
+        this.email = request.email();
+        String requestNickname = request.nickname();
+        // external oauth API 특성상 닉네임이 null or empty 인 경우 default 값 세팅
+        if (requestNickname == null || requestNickname.isEmpty()) {
+            this.nickname = DEFAULT_NICKNAME;
+        } else {
+            this.nickname = request.nickname();
+        }
+        this.oauthProviderUniqueKey = request.oauthProviderUniqueKey();
+        this.oauthLoginType = request.oauthLoginType();
+        this.profileImgUrl = request.profileImgUrl();
+        this.createdAt = LocalDateTime.now();
+        this.modifiedAt = LocalDateTime.now();
+    }
 }
