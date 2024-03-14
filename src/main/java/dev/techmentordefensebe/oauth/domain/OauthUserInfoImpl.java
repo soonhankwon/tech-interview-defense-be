@@ -2,9 +2,11 @@ package dev.techmentordefensebe.oauth.domain;
 
 import static dev.techmentordefensebe.oauth.util.OauthUserInfoRequestConst.EMAIL;
 import static dev.techmentordefensebe.oauth.util.OauthUserInfoRequestConst.GOOGLE_NICKNAME;
+import static dev.techmentordefensebe.oauth.util.OauthUserInfoRequestConst.GOOGLE_PROFILE_IMG_URL;
 import static dev.techmentordefensebe.oauth.util.OauthUserInfoRequestConst.ID;
 import static dev.techmentordefensebe.oauth.util.OauthUserInfoRequestConst.KAKAO_ACCOUNT;
 import static dev.techmentordefensebe.oauth.util.OauthUserInfoRequestConst.KAKAO_NICKNAME;
+import static dev.techmentordefensebe.oauth.util.OauthUserInfoRequestConst.KAKAO_PROFILE_IMG_URL;
 import static dev.techmentordefensebe.oauth.util.OauthUserInfoRequestConst.PROFILE;
 
 import dev.techmentordefensebe.oauth.enumtype.OauthProvider;
@@ -28,16 +30,16 @@ public class OauthUserInfoImpl implements OauthUserInfo {
 
     @Override
     public String getProvider() {
-        String kakao = OauthProvider.KAKAO.getValue();
+        String kakao = OauthProvider.KAKAO.getName();
         if (this.provider.equals(kakao)) {
             return kakao;
         }
-        return OauthProvider.GOOGLE.getValue();
+        return OauthProvider.GOOGLE.getName();
     }
 
     @Override
     public String getEmail() {
-        String kakao = OauthProvider.KAKAO.getValue();
+        String kakao = OauthProvider.KAKAO.getName();
         if (this.provider.equals(kakao)) {
             return (String) getKakaoAccount().get(EMAIL);
         }
@@ -46,10 +48,18 @@ public class OauthUserInfoImpl implements OauthUserInfo {
 
     @Override
     public String getNickname() {
-        if (this.provider.equals(OauthProvider.KAKAO.getValue())) {
+        if (this.provider.equals(OauthProvider.KAKAO.getName())) {
             return (String) getProfile().get(KAKAO_NICKNAME);
         }
         return (String) attributes.get(GOOGLE_NICKNAME);
+    }
+
+    @Override
+    public String getProfileImgUrl() {
+        if (this.provider.equals(OauthProvider.KAKAO.getName())) {
+            return (String) getProfile().get(KAKAO_PROFILE_IMG_URL);
+        }
+        return (String) attributes.get(GOOGLE_PROFILE_IMG_URL);
     }
 
     public Map<String, Object> getKakaoAccount() {
