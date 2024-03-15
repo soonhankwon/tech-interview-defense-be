@@ -2,6 +2,7 @@ package dev.techmentordefensebe.chat.controller;
 
 import dev.techmentordefensebe.chat.dto.request.ChatAddRequest;
 import dev.techmentordefensebe.chat.dto.response.ChatAddResponse;
+import dev.techmentordefensebe.chat.dto.response.ChatDeleteResponse;
 import dev.techmentordefensebe.chat.dto.response.ChatDetailsGetResponse;
 import dev.techmentordefensebe.chat.dto.response.ChatGetResponse;
 import dev.techmentordefensebe.chat.service.ChatService;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,6 +45,13 @@ public class ChatController {
     @GetMapping("/{chatId}")
     public ResponseEntity<ChatDetailsGetResponse> getChat(@PathVariable Long chatId) {
         ChatDetailsGetResponse res = chatService.findChatDetails(chatId);
+        return ResponseEntity.ok().body(res);
+    }
+
+    @DeleteMapping("/{chatId}")
+    public ResponseEntity<ChatDeleteResponse> deleteChat(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                         @PathVariable Long chatId) {
+        ChatDeleteResponse res = chatService.deleteChat(userDetails, chatId);
         return ResponseEntity.ok().body(res);
     }
 }
