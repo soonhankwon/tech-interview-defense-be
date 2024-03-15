@@ -1,7 +1,8 @@
 package dev.techmentordefensebe.user.domain;
 
+import dev.techmentordefensebe.common.domain.BaseTimeEntity;
 import dev.techmentordefensebe.oauth.enumtype.OauthProvider;
-import dev.techmentordefensebe.user.dto.UserAddRequest;
+import dev.techmentordefensebe.user.dto.request.UserAddRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -10,18 +11,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "`user`")
-public class User {
+public class User extends BaseTimeEntity {
 
     private static final String DEFAULT_NICKNAME = "Anonymous";
 
@@ -45,14 +43,6 @@ public class User {
     @Column(name = "profile_img_url")
     private String profileImgUrl;
 
-    @CreatedDate
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @Column(name = "modified_at", nullable = false)
-    private LocalDateTime modifiedAt;
-
     public User(UserAddRequest request) {
         this.email = request.email();
         String requestNickname = request.nickname();
@@ -65,7 +55,5 @@ public class User {
         this.oauthProviderUniqueKey = request.oauthProviderUniqueKey();
         this.oauthLoginType = request.oauthLoginType();
         this.profileImgUrl = request.profileImgUrl();
-        this.createdAt = LocalDateTime.now();
-        this.modifiedAt = LocalDateTime.now();
     }
 }
