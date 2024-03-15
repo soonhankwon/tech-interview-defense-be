@@ -4,23 +4,18 @@ import io.jsonwebtoken.Claims;
 import java.util.Collection;
 import java.util.List;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Getter
+@RequiredArgsConstructor
 public class UserDetailsImpl implements UserDetails {
 
-    private final Long id;
     private final String email;
 
-    public UserDetailsImpl(Long id, String email) {
-        this.id = id;
-        this.email = email;
-    }
-
     public UserDetailsImpl(Claims claims) {
-        this.id = claims.get("id", Long.class);
         this.email = claims.getSubject();
     }
 
