@@ -32,4 +32,13 @@ public class UserTech extends CreatedTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tech_id", nullable = false)
     private Tech tech;
+
+    private UserTech(User user, Tech tech) {
+        this.user = user;
+        this.tech = tech;
+    }
+
+    public static UserTech of(User user, Tech tech) {
+        return new UserTech(user, tech);
+    }
 }
