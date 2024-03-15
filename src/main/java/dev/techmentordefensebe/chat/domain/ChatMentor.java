@@ -28,6 +28,6 @@ public class ChatMentor {
     }
 
     public static ChatMentor from(ChatAddRequest request) {
-        return new ChatMentor(request.mentorDifficulty(), request.topicTech());
+        return new ChatMentor(request.mentorDifficulty(), request.mentorTone());
     }
 }
