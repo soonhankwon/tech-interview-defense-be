@@ -2,8 +2,8 @@ package dev.techmentordefensebe.user.service;
 
 import dev.techmentordefensebe.oauth.enumtype.OauthProvider;
 import dev.techmentordefensebe.user.domain.User;
-import dev.techmentordefensebe.user.dto.UserAddRequest;
-import dev.techmentordefensebe.user.dto.UserAddResponse;
+import dev.techmentordefensebe.user.dto.request.UserAddRequest;
+import dev.techmentordefensebe.user.dto.response.UserAddResponse;
 import dev.techmentordefensebe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
