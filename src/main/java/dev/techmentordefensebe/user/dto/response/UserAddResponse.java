@@ -1,4 +1,4 @@
-package dev.techmentordefensebe.user.dto;
+package dev.techmentordefensebe.user.dto.response;
 
 import dev.techmentordefensebe.oauth.enumtype.OauthProvider;
 import dev.techmentordefensebe.user.domain.User;
