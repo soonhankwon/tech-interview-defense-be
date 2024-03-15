@@ -41,7 +41,7 @@ public class ChatService {
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_EXISTS_USER_EMAIL));
 
         Tech tech = techRepository.findByName(request.topicTech())
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_EXISTS_TOPIC_NAME));
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_EXISTS_TECH_NAME));
 
         ChatMentor chatMentor = ChatMentor.from(request);
         Chat chat = Chat.of(user, tech, chatMentor);
