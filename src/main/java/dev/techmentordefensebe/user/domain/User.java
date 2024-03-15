@@ -3,6 +3,7 @@ package dev.techmentordefensebe.user.domain;
 import dev.techmentordefensebe.common.domain.BaseTimeEntity;
 import dev.techmentordefensebe.oauth.enumtype.OauthProvider;
 import dev.techmentordefensebe.user.dto.request.UserAddRequest;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -10,7 +11,10 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,6 +43,9 @@ public class User extends BaseTimeEntity {
 
     @Column(name = "profile_img_url")
     private String profileImgUrl;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<UserTech> userTechs = new ArrayList<>();
 
     public User(UserAddRequest request) {
         this.email = request.email();
