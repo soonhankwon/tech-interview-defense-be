@@ -1,7 +1,7 @@
 package dev.techmentordefensebe.user.controller;
 
-import dev.techmentordefensebe.user.dto.UserAddRequest;
-import dev.techmentordefensebe.user.dto.UserAddResponse;
+import dev.techmentordefensebe.user.dto.request.UserAddRequest;
+import dev.techmentordefensebe.user.dto.response.UserAddResponse;
 import dev.techmentordefensebe.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
