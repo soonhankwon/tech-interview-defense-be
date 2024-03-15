@@ -7,7 +7,6 @@ import dev.techmentordefensebe.user.domain.User;
 public record UserAddRequest(
         String email,
         String nickname,
-        String oauthProviderUniqueKey,
         OauthProvider oauthLoginType,
         String profileImgUrl
 ) {

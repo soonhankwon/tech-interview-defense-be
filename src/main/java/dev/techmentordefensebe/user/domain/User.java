@@ -33,9 +33,6 @@ public class User extends BaseTimeEntity {
     @Column(name = "nickname")
     private String nickname;
 
-    @Column(name = "oauth_provider_unique_key", nullable = false, unique = true)
-    private String oauthProviderUniqueKey;
-
     @Enumerated(value = EnumType.STRING)
     @Column(name = "oauth_login_type", nullable = false)
     private OauthProvider oauthLoginType;
@@ -52,7 +49,6 @@ public class User extends BaseTimeEntity {
         } else {
             this.nickname = request.nickname();
         }
-        this.oauthProviderUniqueKey = request.oauthProviderUniqueKey();
         this.oauthLoginType = request.oauthLoginType();
         this.profileImgUrl = request.profileImgUrl();
     }

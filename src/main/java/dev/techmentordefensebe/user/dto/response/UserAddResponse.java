@@ -7,7 +7,6 @@ public record UserAddResponse(
         Long id,
         String email,
         String nickname,
-        String oauthProviderUniqueKey,
         OauthProvider oauthLoginType,
         String profileImgUrl
 ) {
@@ -16,7 +15,6 @@ public record UserAddResponse(
                 user.getId(),
                 user.getEmail(),
                 user.getNickname(),
-                user.getOauthProviderUniqueKey(),
                 user.getOauthLoginType(),
                 user.getProfileImgUrl()
         );
