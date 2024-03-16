@@ -29,12 +29,12 @@ public class JwtProvider {
     @Value("${jwt.refresh-token-expiration-minutes}")
     private long refreshTokenExpirationMinutes;
 
-    public String createAccessToken(Long id, String username) {
+    public String createAccessToken(String email) {
         Instant now = Instant.now();
-        Map<String, Object> claims = createClaims(id, username);
+        Map<String, Object> claims = createClaims(email);
         return Jwts.builder()
                 .issuer(issuer)
-                .subject(username)
+                .subject(email)
                 .claims(claims)
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plus(accessTokenExpirationMinutes, ChronoUnit.MINUTES)))
@@ -42,11 +42,11 @@ public class JwtProvider {
                 .compact();
     }
 
-    public String createRefreshToken(String username) {
+    public String createRefreshToken(String email) {
         Instant now = Instant.now();
         return Jwts.builder()
                 .issuer(issuer)
-                .subject(username)
+                .subject(email)
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plus(refreshTokenExpirationMinutes, ChronoUnit.MINUTES)))
                 .signWith(getSecretKey())
@@ -65,9 +65,7 @@ public class JwtProvider {
         return Keys.hmacShaKeyFor(this.secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    private Map<String, Object> createClaims(Long id, String username) {
-        return Map.of(
-                "id", id,
-                "email", username);
+    private Map<String, Object> createClaims(String email) {
+        return Map.of("email", email);
     }
 }
