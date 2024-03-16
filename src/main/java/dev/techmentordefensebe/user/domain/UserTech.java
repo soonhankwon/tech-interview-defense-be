@@ -38,7 +38,7 @@ public class UserTech extends CreatedTimeEntity {
         this.tech = tech;
     }
 
-    public static UserTech of(User user, Tech tech) {
+    public static UserTech toEntity(User user, Tech tech) {
         return new UserTech(user, tech);
     }
 }
