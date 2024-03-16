@@ -1,16 +1,21 @@
 package dev.techmentordefensebe.oauth.service;
 
+import dev.techmentordefensebe.common.util.CookieProvider;
+import dev.techmentordefensebe.common.util.JwtProvider;
 import dev.techmentordefensebe.oauth.domain.OauthUserInfoImpl;
 import dev.techmentordefensebe.oauth.dto.OauthLoginResponse;
 import dev.techmentordefensebe.oauth.dto.OauthTokenDTO;
 import dev.techmentordefensebe.oauth.enumtype.OauthProvider;
 import dev.techmentordefensebe.user.repository.UserRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.stereotype.Service;
@@ -24,9 +29,11 @@ public class OauthServiceImpl implements OauthService {
 
     private final InMemoryClientRegistrationRepository clientRegistrationRepository;
     private final UserRepository userRepository;
+    private final JwtProvider jwtProvider;
+    private final CookieProvider cookieProvider;
 
     @Override
-    public OauthLoginResponse login(String provider, String code) {
+    public OauthLoginResponse login(String provider, String code, HttpServletResponse httpServletResponse) {
         if (provider == null || provider.isEmpty()) {
             throw new IllegalArgumentException("provider can't null or empty");
         }
@@ -37,10 +44,18 @@ public class OauthServiceImpl implements OauthService {
         OauthTokenDTO oauthToken = getOauthToken(code, clientRegistration);
 
         OauthUserInfoImpl oauthUserInfo = getUserInfoFromOauth(provider, oauthToken, clientRegistration);
-        String oauthProviderUniqueKey = oauthUserInfo.getProviderId();
 
+        String email = oauthUserInfo.getEmail();
         //isRegistered: 서비스에 이미 가입된 유저인지 여부
-        boolean isRegistered = userRepository.existsByOauthProviderUniqueKey(oauthProviderUniqueKey);
+        boolean isRegistered = userRepository.existsByEmail(email);
+        if (isRegistered) {
+            String accessToken = jwtProvider.createAccessToken(email);
+            httpServletResponse.setHeader(HttpHeaders.AUTHORIZATION, accessToken);
+
+            String refreshToken = jwtProvider.createRefreshToken(email);
+            ResponseCookie cookie = cookieProvider.createCookie(refreshToken);
+            httpServletResponse.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        }
         //oauth 사용자 정보와 서비스 가입여부를 프론트에 응답해줌
         return OauthLoginResponse.from(oauthUserInfo, isRegistered);
     }
