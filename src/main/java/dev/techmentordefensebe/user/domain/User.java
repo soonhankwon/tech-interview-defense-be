@@ -47,16 +47,24 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<UserTech> userTechs = new ArrayList<>();
 
-    public User(UserAddRequest request) {
-        this.email = request.email();
-        String requestNickname = request.nickname();
+    private User(String email, String nickname, OauthProvider oauthProvider, String profileImgUrl) {
+        this.email = email;
         // external oauth API 특성상 닉네임이 null or empty 인 경우 default 값 세팅
-        if (requestNickname == null || requestNickname.isEmpty()) {
+        if (nickname == null || nickname.isEmpty()) {
             this.nickname = DEFAULT_NICKNAME;
         } else {
-            this.nickname = request.nickname();
+            this.nickname = nickname;
         }
-        this.oauthLoginType = request.oauthLoginType();
-        this.profileImgUrl = request.profileImgUrl();
+        this.oauthLoginType = oauthProvider;
+        this.profileImgUrl = profileImgUrl;
+    }
+
+    public static User toEntity(UserAddRequest request) {
+        return new User(
+                request.email(),
+                request.nickname(),
+                request.oauthLoginType(),
+                request.profileImgUrl()
+        );
     }
 }
