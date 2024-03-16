@@ -32,7 +32,7 @@ public class UserService {
         if (request.oauthLoginType() == OauthProvider.NONE) {
             //TODO email 인증 로직
         }
-        User user = request.toEntity();
+        User user = User.toEntity(request);
         userRepository.save(user);
         return UserAddResponse.from(user);
     }
@@ -47,7 +47,7 @@ public class UserService {
         Tech tech = techRepository.findByName(request.techName())
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_EXISTS_TECH_NAME));
 
-        UserTech userTech = request.toEntity(user, tech);
+        UserTech userTech = UserTech.toEntity(user, tech);
         List<UserTech> userTechs = user.getUserTechs();
 
         //DB 쿼리로 중복체크를 하는대신 메모리에 올려서 중복체크
