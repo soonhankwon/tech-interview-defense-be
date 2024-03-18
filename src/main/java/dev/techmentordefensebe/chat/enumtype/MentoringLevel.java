@@ -5,11 +5,10 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum Difficulty {
-    EASY("쉬움"),
-    INTERMEDIATE("중간"),
-    HARD("어려움"),
-    EXTREME("매우어려움");
+public enum MentoringLevel {
+    BEGINNER("비기너"),
+    INTERMEDIATE("미드레벨"),
+    PROFESSIONAL("프로페셔널");
 
     private final String value;
 }
