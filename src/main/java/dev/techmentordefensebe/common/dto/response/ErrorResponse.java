@@ -2,27 +2,30 @@ package dev.techmentordefensebe.common.dto.response;
 
 import dev.techmentordefensebe.common.enumtype.ErrorCode;
 import dev.techmentordefensebe.common.exception.CustomException;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 
 public record ErrorResponse(
         int code,
         String message
 ) {
-    public static ResponseEntity<ErrorResponse> toResponseEntity(CustomException exception) {
-        ErrorCode errorCode = exception.getErrorCode();
-        return ResponseEntity.status(exception.getStatus())
-                .body(
-                        new ErrorResponse(
-                                errorCode.getCode(),
-                                errorCode.getMessage())
-                );
-    }
-
-    public static ErrorResponse from(CustomException exception) {
-        ErrorCode errorCode = exception.getErrorCode();
+    public static ErrorResponse from(Exception exception) {
+        ErrorCode errorCode;
+        if (exception instanceof CustomException customException) {
+            errorCode = customException.getErrorCode();
+            return new ErrorResponse(
+                    errorCode.getCode(),
+                    errorCode.getMessage()
+            );
+        }
+        if (exception instanceof RuntimeException runtimeException) {
+            return new ErrorResponse(
+                    HttpStatus.BAD_REQUEST.value(),
+                    runtimeException.getMessage()
+            );
+        }
         return new ErrorResponse(
-                errorCode.getCode(),
-                errorCode.getMessage()
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                exception.getMessage()
         );
     }
 }
