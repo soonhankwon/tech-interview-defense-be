@@ -1,7 +1,7 @@
 package dev.techmentordefensebe.chat.domain;
 
 import dev.techmentordefensebe.chat.dto.request.ChatAddRequest;
-import dev.techmentordefensebe.chat.enumtype.Difficulty;
+import dev.techmentordefensebe.chat.enumtype.MentoringLevel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
@@ -15,19 +15,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatMentor {
 
-    @Column(name = "difficulty", nullable = false)
+    @Column(name = "mentoring_level", nullable = false)
     @Enumerated(EnumType.STRING)
-    private Difficulty difficulty;
+    private MentoringLevel mentoringLevel;
 
     @Column(name = "tone", nullable = false)
     private String tone;
 
-    private ChatMentor(Difficulty difficulty, String tone) {
-        this.difficulty = difficulty;
+    private ChatMentor(MentoringLevel mentoringLevel, String tone) {
+        this.mentoringLevel = mentoringLevel;
         this.tone = tone;
     }
 
     public static ChatMentor from(ChatAddRequest request) {
-        return new ChatMentor(request.mentorDifficulty(), request.mentorTone());
+        return new ChatMentor(request.mentoringLevel(), request.mentorTone());
     }
 }
