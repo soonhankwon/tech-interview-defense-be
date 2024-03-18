@@ -1,10 +1,11 @@
 package dev.techmentordefensebe.chat.dto.request;
 
-import dev.techmentordefensebe.chat.enumtype.Difficulty;
+import dev.techmentordefensebe.chat.enumtype.MentoringLevel;
 
 public record ChatAddRequest(
         String topicTech,
-        Difficulty mentorDifficulty,
-        String mentorTone
+        MentoringLevel mentoringLevel,
+        String mentorTone,
+        Boolean isDefenseMode
 ) {
 }
