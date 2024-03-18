@@ -4,10 +4,9 @@ import dev.techmentordefensebe.chat.dto.request.ChatAddRequest;
 import dev.techmentordefensebe.chat.dto.response.ChatAddResponse;
 import dev.techmentordefensebe.chat.dto.response.ChatDeleteResponse;
 import dev.techmentordefensebe.chat.dto.response.ChatDetailsGetResponse;
-import dev.techmentordefensebe.chat.dto.response.ChatGetResponse;
+import dev.techmentordefensebe.chat.dto.response.ChatsGetResponse;
 import dev.techmentordefensebe.chat.service.ChatService;
 import dev.techmentordefensebe.common.security.impl.UserDetailsImpl;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -37,8 +37,10 @@ public class ChatController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ChatGetResponse>> getChatsByUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        List<ChatGetResponse> res = chatService.findChatsByUser(userDetails);
+    public ResponseEntity<ChatsGetResponse> getChatsByUser(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                           @RequestParam int pageNumber,
+                                                           @RequestParam(required = false) String mode) {
+        ChatsGetResponse res = chatService.findChatsByUser(userDetails, pageNumber, mode);
         return ResponseEntity.ok().body(res);
     }
 
