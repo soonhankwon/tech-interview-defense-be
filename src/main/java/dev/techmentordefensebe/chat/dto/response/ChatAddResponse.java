@@ -15,7 +15,7 @@ public record ChatAddResponse(
         return new ChatAddResponse(
                 chat.getId(),
                 tech.getName(),
-                chat.getChatMentor().getDifficulty().getValue(),
+                chat.getChatMentor().getMentoringLevel().getValue(),
                 chat.getChatMentor().getTone(),
                 user.getId()
         );
