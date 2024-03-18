@@ -4,6 +4,7 @@ import dev.techmentordefensebe.common.domain.BaseTimeEntity;
 import dev.techmentordefensebe.tech.domain.Tech;
 import dev.techmentordefensebe.user.domain.User;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -41,16 +42,20 @@ public class Chat extends BaseTimeEntity {
     @Embedded
     private ChatMentor chatMentor;
 
+    @Column(name = "is_defense_mode", nullable = false)
+    private Boolean isDefenseMode;
+
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<ChatMessage> chatMessages = new ArrayList<>();
 
-    private Chat(User user, Tech tech, ChatMentor chatMentor) {
+    private Chat(User user, Tech tech, ChatMentor chatMentor, Boolean isDefenseMode) {
         this.user = user;
         this.tech = tech;
         this.chatMentor = chatMentor;
+        this.isDefenseMode = isDefenseMode;
     }
 
-    public static Chat of(User user, Tech tech, ChatMentor chatMentor) {
-        return new Chat(user, tech, chatMentor);
+    public static Chat of(User user, Tech tech, ChatMentor chatMentor, Boolean isDefenseMode) {
+        return new Chat(user, tech, chatMentor, isDefenseMode);
     }
 }
