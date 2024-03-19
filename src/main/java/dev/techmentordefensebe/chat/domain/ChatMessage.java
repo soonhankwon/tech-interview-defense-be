@@ -36,4 +36,14 @@ public class ChatMessage extends CreatedTimeEntity {
      */
     @Column(name = "is_user_message")
     private Boolean isUserMessage;
+
+    private ChatMessage(String content, Chat chat, Boolean isUserMessage) {
+        this.content = content;
+        this.chat = chat;
+        this.isUserMessage = isUserMessage;
+    }
+
+    public static ChatMessage of(String content, Chat chat, Boolean isUserMessage) {
+        return new ChatMessage(content, chat, isUserMessage);
+    }
 }
