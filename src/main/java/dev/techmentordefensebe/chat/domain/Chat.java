@@ -1,5 +1,9 @@
 package dev.techmentordefensebe.chat.domain;
 
+import static dev.techmentordefensebe.openai.util.PromptGenerator.HI;
+import static dev.techmentordefensebe.openai.util.PromptGenerator.INTRODUCE;
+import static dev.techmentordefensebe.openai.util.PromptGenerator.WHAT_HELP;
+
 import dev.techmentordefensebe.common.domain.BaseTimeEntity;
 import dev.techmentordefensebe.tech.domain.Tech;
 import dev.techmentordefensebe.user.domain.User;
@@ -53,6 +57,12 @@ public class Chat extends BaseTimeEntity {
         this.tech = tech;
         this.chatMentor = chatMentor;
         this.isDefenseMode = isDefenseMode;
+        this.chatMessages.add(
+                ChatMessage.of(
+                        HI + this.tech.getName() + " " + INTRODUCE + WHAT_HELP,
+                        this,
+                        false)
+        );
     }
 
     public static Chat of(User user, Tech tech, ChatMentor chatMentor, Boolean isDefenseMode) {
