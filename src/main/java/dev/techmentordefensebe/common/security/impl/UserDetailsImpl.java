@@ -13,9 +13,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 @RequiredArgsConstructor
 public class UserDetailsImpl implements UserDetails {
 
+    private final Long userId;
     private final String email;
 
     public UserDetailsImpl(Claims claims) {
+        this.userId = claims.get("id", Long.class);
         this.email = claims.getSubject();
     }
 
