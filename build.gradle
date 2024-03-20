@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.3'
     id 'io.spring.dependency-management' version '1.1.4'
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
 group = 'dev'
@@ -12,6 +13,7 @@ java {
 }
 
 configurations {
+    asciidoctorExt
     compileOnly {
         extendsFrom annotationProcessor
     }
@@ -35,12 +37,51 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+
     //jwt
     implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.3'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 }
 
-tasks.named('test') {
+ext {
+    set('snippetsDir', file("build/generated-snippets"))
+}
+
+test {
+    outputs.dir snippetsDir
     useJUnitPlatform()
+}
+
+// Gradle 이 asciidoctor Task 를 수행하는 설정 (함수 선언)
+asciidoctor {
+    configurations 'asciidoctorExt' // asciidoctor 확장 설정
+    baseDirFollowsSourceFile() // .adoc 파일을 include 하면서 사용하기 위한 설정
+    inputs.dir snippetsDir // 스니펫을 불러올 위치 설정
+    dependsOn test // Gradle 의 test Task 이후 asciidoctor 를 수행
+}
+
+// asciidoctor Task 가 수행될 때 가장 먼저 수행
+asciidoctor.doFirst {
+    delete file('src/main/resources/static/docs')
+}
+
+// 생성된 html 파일을 옮긴다
+tasks.register('copyDocument', Copy) {
+    dependsOn asciidoctor // Gradle 의 asciidoctor Task 이후 수행
+    from file("${asciidoctor.outputDir}")
+    into file("src/main/resources/static/docs")
+}
+
+build {
+    dependsOn copyDocument // build 이후 html 파일 복사
+}
+
+bootJar {
+    dependsOn asciidoctor // asciidoctor 이후 bootJar 수행
+    from("${asciidoctor.outputDir}") {
+        into 'static/docs'
+    }
 }
