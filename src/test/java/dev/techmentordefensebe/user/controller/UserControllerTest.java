@@ -14,10 +14,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import dev.techmentordefensebe.annotation.WithUserPrincipals;
+import dev.techmentordefensebe.common.security.impl.UserDetailsImpl;
 import dev.techmentordefensebe.oauth.enumtype.OauthProvider;
+import dev.techmentordefensebe.user.dto.UserTechDTO;
 import dev.techmentordefensebe.user.dto.request.UserAddRequest;
+import dev.techmentordefensebe.user.dto.request.UserTechAddRequest;
 import dev.techmentordefensebe.user.dto.response.UserAddResponse;
+import dev.techmentordefensebe.user.dto.response.UserTechAddResponse;
 import dev.techmentordefensebe.user.service.UserService;
+import java.util.List;
 import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -85,7 +90,39 @@ class UserControllerTest {
         return new UserAddResponse(1L, email, nickname, oauthLoginType, profileImgUrl);
     }
 
+    @DisplayName("[POST]유저기술등록 - 정상호출")
+    @WithUserPrincipals
     @Test
-    void addUserTech() {
+    void addUserTech() throws Exception {
+        JSONObject request = new JSONObject();
+        String techName = "SPRING";
+        request.put("techName", techName);
+
+        when(userService.addUserTech(any(UserDetailsImpl.class), any(UserTechAddRequest.class)))
+                .thenReturn(createUserTechAddResponse(techName));
+
+        mvc.perform(
+                        RestDocumentationRequestBuilders.post("/api/v1/users/techs")
+                                .with(csrf().asHeader())
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .content(request.toString()))
+                .andDo(print())
+                .andDo(
+                        document(
+                                "add-user-tech",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestFields(
+                                        fieldWithPath("techName").type(STRING).description("유저기술이름")
+                                )
+                        )
+                )
+                .andExpect(status().isCreated());
+    }
+
+    private UserTechAddResponse createUserTechAddResponse(String techName) {
+        UserTechDTO existsUserTech = new UserTechDTO(1L, "JAVA");
+        UserTechDTO userTechDTO = new UserTechDTO(2L, techName);
+        return UserTechAddResponse.from(List.of(existsUserTech, userTechDTO));
     }
 }
