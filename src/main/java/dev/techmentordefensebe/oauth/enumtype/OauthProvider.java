@@ -11,11 +11,11 @@ public enum OauthProvider {
     GOOGLE("google"),
     NONE("none");
 
-    private final String name;
+    private final String value;
 
     public static void validateProvider(String provider) {
         boolean isValidProvider = Arrays.stream(OauthProvider.values())
-                .map(OauthProvider::getName)
+                .map(OauthProvider::getValue)
                 .anyMatch(i -> i.equals(provider));
 
         if (!isValidProvider) {
