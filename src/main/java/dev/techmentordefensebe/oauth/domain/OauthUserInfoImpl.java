@@ -30,16 +30,16 @@ public class OauthUserInfoImpl implements OauthUserInfo {
 
     @Override
     public String getProvider() {
-        String kakao = OauthProvider.KAKAO.getName();
+        String kakao = OauthProvider.KAKAO.getValue();
         if (this.provider.equals(kakao)) {
             return kakao;
         }
-        return OauthProvider.GOOGLE.getName();
+        return OauthProvider.GOOGLE.getValue();
     }
 
     @Override
     public String getEmail() {
-        String kakao = OauthProvider.KAKAO.getName();
+        String kakao = OauthProvider.KAKAO.getValue();
         if (this.provider.equals(kakao)) {
             return (String) getKakaoAccount().get(EMAIL);
         }
@@ -48,7 +48,7 @@ public class OauthUserInfoImpl implements OauthUserInfo {
 
     @Override
     public String getNickname() {
-        if (this.provider.equals(OauthProvider.KAKAO.getName())) {
+        if (this.provider.equals(OauthProvider.KAKAO.getValue())) {
             return (String) getProfile().get(KAKAO_NICKNAME);
         }
         return (String) attributes.get(GOOGLE_NICKNAME);
@@ -56,7 +56,7 @@ public class OauthUserInfoImpl implements OauthUserInfo {
 
     @Override
     public String getProfileImgUrl() {
-        if (this.provider.equals(OauthProvider.KAKAO.getName())) {
+        if (this.provider.equals(OauthProvider.KAKAO.getValue())) {
             return (String) getProfile().get(KAKAO_PROFILE_IMG_URL);
         }
         return (String) attributes.get(GOOGLE_PROFILE_IMG_URL);
