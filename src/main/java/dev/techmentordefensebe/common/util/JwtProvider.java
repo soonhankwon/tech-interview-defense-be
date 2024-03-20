@@ -1,5 +1,6 @@
 package dev.techmentordefensebe.common.util;
 
+import dev.techmentordefensebe.user.domain.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -29,12 +30,12 @@ public class JwtProvider {
     @Value("${jwt.refresh-token-expiration-minutes}")
     private long refreshTokenExpirationMinutes;
 
-    public String createAccessToken(String email) {
+    public String createAccessToken(User user) {
         Instant now = Instant.now();
-        Map<String, Object> claims = createClaims(email);
+        Map<String, Object> claims = createClaims(user);
         return Jwts.builder()
                 .issuer(issuer)
-                .subject(email)
+                .subject(user.getEmail())
                 .claims(claims)
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plus(accessTokenExpirationMinutes, ChronoUnit.MINUTES)))
@@ -65,7 +66,10 @@ public class JwtProvider {
         return Keys.hmacShaKeyFor(this.secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    private Map<String, Object> createClaims(String email) {
-        return Map.of("email", email);
+    private Map<String, Object> createClaims(User user) {
+        return Map.of(
+                "id", user.getId(),
+                "email", user.getEmail()
+        );
     }
 }
