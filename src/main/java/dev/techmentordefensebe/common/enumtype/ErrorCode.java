@@ -13,7 +13,8 @@ public enum ErrorCode {
     NOT_EXISTS_TECH_NAME(4003, "기술 이름이 존재하지 않습니다."),
     NOT_EXISTS_CHAT_ID(4004, "채팅 ID가 존재하지 않습니다."),
     EXISTS_DUPLICATED_TECH_NAME(4005, "중복된 기술 이름이 존재합니다."),
-    NOT_EXISTS_USER_ID(4006, "유저 ID가 존재하지 않습니다.");
+    NOT_EXISTS_USER_ID(4006, "유저 ID가 존재하지 않습니다."),
+    NOT_EXISTS_CHAT_ID_WITH_USER(4007, "유저 ID의 채팅 ID가 존재하지 않습니다.");
 
     private final int code;
     private final String message;
