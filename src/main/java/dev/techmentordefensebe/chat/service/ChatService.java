@@ -31,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ChatService {
 
     private static final int PAGE_SIZE = 10;
+    private static final String MENTOR_MODE = "mentor";
     private static final String DEFENSE_MODE = "defense";
 
     private final ChatRepository chatRepository;
@@ -39,12 +40,11 @@ public class ChatService {
 
     @Transactional
     public ChatAddResponse addChat(UserDetailsImpl userDetails, ChatAddRequest request) {
-        String email = userDetails.getEmail();
-        assert email != null;
+        Long userId = userDetails.getUserId();
 
         User user = userRepository
-                .findByEmail(email)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_EXISTS_USER_EMAIL));
+                .findById(userId)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_EXISTS_USER_ID));
 
         Tech tech = techRepository.findByName(request.topicTech())
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_EXISTS_TECH_NAME));
@@ -57,19 +57,24 @@ public class ChatService {
     }
 
     public ChatsGetResponse findChatsByUser(UserDetailsImpl userDetails, int pageNumber, String mode) {
-        String email = userDetails.getEmail();
+        Long userId = userDetails.getUserId();
+
         User user = userRepository
-                .findByEmail(email)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_EXISTS_USER_EMAIL));
+                .findById(userId)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_EXISTS_USER_ID));
 
         PageRequest pageRequest = PageRequest.of(pageNumber, PAGE_SIZE);
-        //TODO mode validation 필요
+        // mode 가 null 이 아닌경우 mode 는 mentor or defense 이다.(컨트롤러 레이어에서 validation 하기 때문에)
         if (mode != null) {
+            assert mode.equals(MENTOR_MODE) || mode.equals(DEFENSE_MODE);
             boolean isDefenseMode = isModeDefense(mode);
+
+            // mentor or defense 모드의 조회 결과를 리턴한다.
             Page<Chat> page = chatRepository.findAllByUserAndIsDefenseMode(user, isDefenseMode, pageRequest);
             List<ChatDTO> chatDTOS = convertPageChatDTOS(page);
             return ChatsGetResponse.of(page.getTotalPages(), chatDTOS);
         }
+        // mode 가 null 인 경우 mentor, defense 모두를 포함한 조회 결과를 리턴한다.
         Page<Chat> page = chatRepository.findAllByUser(user, pageRequest);
         List<ChatDTO> chatDTOS = convertPageChatDTOS(page);
         return ChatsGetResponse.of(page.getTotalPages(), chatDTOS);
@@ -85,8 +90,9 @@ public class ChatService {
                 .collect(Collectors.toList());
     }
 
-    public ChatDetailsGetResponse findChatDetails(Long chatId) {
-        Chat chat = findChatByChatId(chatId);
+    public ChatDetailsGetResponse findChatDetails(UserDetailsImpl userDetails, Long chatId) {
+        Long userId = userDetails.getUserId();
+        Chat chat = findChatByChatIdAndUserId(chatId, userId);
         List<ChatMessageDTO> chatMessages = chat.getChatMessages()
                 .stream()
                 .map(ChatMessageDTO::from)
@@ -97,18 +103,17 @@ public class ChatService {
 
     @Transactional
     public ChatDeleteResponse deleteChat(UserDetailsImpl userDetails, Long chatId) {
-        String email = userDetails.getEmail();
-        assert email != null;
+        Long userId = userDetails.getUserId();
 
-        Chat chat = chatRepository.findByIdAndUser_Email(chatId, email)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_EXISTS_USER));
+        Chat chat = chatRepository.findByIdAndUser_Id(chatId, userId)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_EXISTS_CHAT_ID_WITH_USER));
 
         chatRepository.delete(chat);
         return ChatDeleteResponse.from(true);
     }
 
-    private Chat findChatByChatId(Long chatId) {
-        return chatRepository.findById(chatId)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_EXISTS_CHAT_ID));
+    private Chat findChatByChatIdAndUserId(Long chatId, Long userId) {
+        return chatRepository.findByIdAndUser_Id(chatId, userId)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_EXISTS_CHAT_ID_WITH_USER));
     }
 }
