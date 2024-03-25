@@ -1,0 +1,17 @@
+=== 유저채팅 목록조회 API
+
+==== 1. Curl Request
+
+include::{snippets}/get-chats-by-user/curl-request.adoc[]
+
+==== 2. HTTP Request
+
+include::{snippets}/get-chats-by-user/http-request.adoc[]
+
+==== 3. HTTP Request Body
+
+include::{snippets}/get-chats-by-user/request-body.adoc[]
+
+==== 4. HTTP Response Body
+
+include::{snippets}/get-chats-by-user/response-body.adoc[]
