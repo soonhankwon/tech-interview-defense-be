@@ -1,0 +1,18 @@
+=== 채팅추가 API
+
+==== 1. Curl Request
+
+include::{snippets}/add-chat/curl-request.adoc[]
+
+==== 2. HTTP Request
+
+include::{snippets}/add-chat/http-request.adoc[]
+
+==== 3. HTTP Request Body
+
+include::{snippets}/add-chat/request-body.adoc[]
+include::{snippets}/add-chat/request-fields.adoc[]
+
+==== 4. HTTP Response Body
+
+include::{snippets}/add-chat/response-body.adoc[]
