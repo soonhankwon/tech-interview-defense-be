@@ -1,4 +1,4 @@
-=== 회원기술 등록 API
+=== 유저기술 추가 API
 
 ==== 1. Curl Request
 
