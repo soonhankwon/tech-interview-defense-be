@@ -14,5 +14,5 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
 
     Page<Chat> findAllByUserAndIsDefenseMode(User user, Boolean isDefenseMode, Pageable pageable);
 
-    Optional<Chat> findByIdAndUser_Email(Long chatId, String email);
+    Optional<Chat> findByIdAndUser_Id(Long chatId, Long userId);
 }
