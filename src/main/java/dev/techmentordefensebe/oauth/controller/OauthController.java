@@ -3,6 +3,7 @@ package dev.techmentordefensebe.oauth.controller;
 import dev.techmentordefensebe.oauth.dto.OauthLoginResponse;
 import dev.techmentordefensebe.oauth.service.OauthService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,9 +20,10 @@ public class OauthController {
     private final OauthService oauthService;
 
     @GetMapping("{provider}")
-    public ResponseEntity<OauthLoginResponse> oauthLogin(@PathVariable String provider,
-                                                         @RequestParam String code,
-                                                         HttpServletResponse httpServletResponse) {
+    public ResponseEntity<OauthLoginResponse> oauthLogin(
+            @PathVariable @NotBlank(message = "provider is not null or empty") String provider,
+            @RequestParam String code,
+            HttpServletResponse httpServletResponse) {
 
         OauthLoginResponse res = oauthService.login(provider, code, httpServletResponse);
         return ResponseEntity.ok().body(res);
