@@ -41,7 +41,7 @@ public class ChatController {
     public ResponseEntity<ChatsGetResponse> getChatsByUser(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                            @RequestParam int pageNumber,
                                                            @RequestParam(required = false)
-                                                           @Pattern(regexp = "^defense", message = "mode는 defense만 가능합니다.") String mode) {
+                                                           @Pattern(regexp = "^(mentor|defense)", message = "mode는 mentor 또는 defense만 가능합니다.") String mode) {
         ChatsGetResponse res = chatService.findChatsByUser(userDetails, pageNumber, mode);
         return ResponseEntity.ok().body(res);
     }
