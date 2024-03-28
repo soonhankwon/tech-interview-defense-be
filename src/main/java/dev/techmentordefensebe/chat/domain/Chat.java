@@ -57,6 +57,15 @@ public class Chat extends BaseTimeEntity {
         this.tech = tech;
         this.chatMentor = chatMentor;
         this.isDefenseMode = isDefenseMode;
+        if (isDefenseMode) {
+            this.chatMessages.add(
+                    ChatMessage.of(
+                            HI + this.tech.getName() + " 기술면접을 시작하겠습니다.",
+                            this,
+                            false)
+            );
+            return;
+        }
         this.chatMessages.add(
                 ChatMessage.of(
                         HI + this.tech.getName() + " " + INTRODUCE + WHAT_HELP,
