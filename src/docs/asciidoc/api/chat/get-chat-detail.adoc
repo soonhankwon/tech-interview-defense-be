@@ -1,0 +1,17 @@
+=== 채팅 상세조회 API
+
+==== 1. Curl Request
+
+include::{snippets}/get-chat-detail/curl-request.adoc[]
+
+==== 2. HTTP Request
+
+include::{snippets}/get-chat-detail/http-request.adoc[]
+
+==== 3. HTTP Request Body
+
+include::{snippets}/get-chat-detail/request-body.adoc[]
+
+==== 4. HTTP Response Body
+
+include::{snippets}/get-chat-detail/response-body.adoc[]
