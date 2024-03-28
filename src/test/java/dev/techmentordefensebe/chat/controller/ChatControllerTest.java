@@ -2,6 +2,7 @@ package dev.techmentordefensebe.chat.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
@@ -20,8 +21,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import dev.techmentordefensebe.annotation.WithUserPrincipals;
 import dev.techmentordefensebe.chat.dto.ChatDTO;
+import dev.techmentordefensebe.chat.dto.ChatMessageDTO;
 import dev.techmentordefensebe.chat.dto.request.ChatAddRequest;
 import dev.techmentordefensebe.chat.dto.response.ChatAddResponse;
+import dev.techmentordefensebe.chat.dto.response.ChatDetailsGetResponse;
 import dev.techmentordefensebe.chat.dto.response.ChatsGetResponse;
 import dev.techmentordefensebe.chat.service.ChatService;
 import dev.techmentordefensebe.common.security.impl.UserDetailsImpl;
@@ -148,10 +151,37 @@ class ChatControllerTest {
         return new ChatsGetResponse(1, List.of(chat1, chat2));
     }
 
+    @DisplayName("[GET]유저채팅 상세조회 - 정상호출")
+    @WithUserPrincipals
     @Test
-    void getChat() {
+    void getChat() throws Exception {
+        when(chatService.findChatDetails(any(), anyLong()))
+                .thenReturn(createChatDetailsGetResponse());
+
+        mvc.perform(
+                        RestDocumentationRequestBuilders.get("/api/v1/chats/1")
+                                .header(HttpHeaders.AUTHORIZATION, UUID.randomUUID())
+                                .with(csrf().asHeader()))
+                .andDo(print())
+                .andDo(
+                        document(
+                                "get-chat-detail",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint())
+                        )
+                )
+                .andExpect(status().isOk());
     }
 
+    private ChatDetailsGetResponse createChatDetailsGetResponse() {
+        LocalDateTime now = LocalDateTime.now();
+        ChatMessageDTO dto1 = new ChatMessageDTO("안녕하세요!", false, now);
+        ChatMessageDTO dto2 = new ChatMessageDTO("DI란 무엇인가요?", true, now.plusSeconds(1L));
+        return new ChatDetailsGetResponse(1L, 1L, List.of(dto1, dto2));
+    }
+
+    @DisplayName("[DELETE]채팅삭제 - 정상호출")
+    @WithUserPrincipals
     @Test
     void deleteChat() {
     }
