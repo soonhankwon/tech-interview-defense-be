@@ -21,6 +21,7 @@ import dev.techmentordefensebe.chat.dto.ChatDTO;
 import dev.techmentordefensebe.chat.dto.ChatMessageDTO;
 import dev.techmentordefensebe.chat.dto.request.ChatAddRequest;
 import dev.techmentordefensebe.chat.dto.response.ChatAddResponse;
+import dev.techmentordefensebe.chat.dto.response.ChatDeleteResponse;
 import dev.techmentordefensebe.chat.dto.response.ChatDetailsGetResponse;
 import dev.techmentordefensebe.chat.dto.response.ChatsGetResponse;
 import dev.techmentordefensebe.chat.service.ChatService;
@@ -40,6 +41,10 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 
+/*
+ * Response 레코드 생성시 eg)Chat or Tech 같은 객체를 매개변수로 받아 생성하는 경우 static factory method 사용이 어렵고 코드가 길어짐
+ * 따라서, 해당 경우에는 생성자를 사용하여 Response 생성
+ */
 @DisplayName("[컨트롤러]채팅")
 @WebMvcTest(ChatController.class)
 @AutoConfigureRestDocs
@@ -126,7 +131,7 @@ class ChatControllerTest {
         LocalDateTime now = LocalDateTime.now();
         ChatDTO chat1 = new ChatDTO(1L, "SPRING", false, now);
         ChatDTO chat2 = new ChatDTO(3L, "JAVA", false, now.plusSeconds(1L));
-        return new ChatsGetResponse(1, List.of(chat1, chat2));
+        return ChatsGetResponse.of(1, List.of(chat1, chat2));
     }
 
     @DisplayName("[GET]유저채팅 상세조회 - 정상호출")
@@ -161,6 +166,26 @@ class ChatControllerTest {
     @DisplayName("[DELETE]채팅삭제 - 정상호출")
     @WithUserPrincipals
     @Test
-    void deleteChat() {
+    void deleteChat() throws Exception {
+        when(chatService.deleteChat(any(), anyLong()))
+                .thenReturn(createChatDeleteResponse());
+
+        mvc.perform(
+                        RestDocumentationRequestBuilders.delete("/api/v1/chats/1")
+                                .header(HttpHeaders.AUTHORIZATION, UUID.randomUUID())
+                                .with(csrf().asHeader()))
+                .andDo(print())
+                .andDo(
+                        document(
+                                "delete-chat",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint())
+                        )
+                )
+                .andExpect(status().isOk());
+    }
+
+    private ChatDeleteResponse createChatDeleteResponse() {
+        return ChatDeleteResponse.from(true);
     }
 }
