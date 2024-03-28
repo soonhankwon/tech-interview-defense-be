@@ -1,7 +1,6 @@
 package dev.techmentordefensebe.config;
 
 import dev.techmentordefensebe.common.security.filter.JwtVerificationFilter;
-import dev.techmentordefensebe.common.security.handler.CustomAuthenticationEntryPoint;
 import dev.techmentordefensebe.common.util.JwtProvider;
 import java.util.Arrays;
 import java.util.List;
@@ -28,12 +27,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     private final JwtProvider jwtProvider;
-    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     private static final String[] AUTH_WHITELIST = {
             "/api/v1/oauth/**",
-            "/api/v1/auth/**",
-            "/api/v1/users"
+            "/api/v1/users",
+            "/api/test/**"
     };
 
     @Bean
@@ -52,8 +50,6 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(
-                        exception -> exception.authenticationEntryPoint(customAuthenticationEntryPoint))
                 .addFilterBefore(new JwtVerificationFilter(jwtProvider),
                         UsernamePasswordAuthenticationFilter.class)
                 .build();
