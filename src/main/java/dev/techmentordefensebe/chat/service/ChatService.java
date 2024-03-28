@@ -49,11 +49,21 @@ public class ChatService {
         Tech tech = techRepository.findByName(request.topicTech())
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_EXISTS_TECH_NAME));
 
+        Chat chat;
         ChatMentor chatMentor = ChatMentor.from(request);
-        Chat chat = Chat.of(user, tech, chatMentor, request.isDefenseMode());
-        chatRepository.save(chat);
-
+        if (request.isDefenseMode()) {
+            chat = saveChatByIsDefenseMode(user, tech, chatMentor, true);
+            return ChatAddResponse.of(user, tech, chat);
+        }
+        chat = saveChatByIsDefenseMode(user, tech, chatMentor, false);
         return ChatAddResponse.of(user, tech, chat);
+    }
+
+    private Chat saveChatByIsDefenseMode(User user, Tech tech, ChatMentor chatMentor, boolean isDefenseMode) {
+        // isDefenseMode 여부에 따라 Chat 을 생성하는 세부 로직이 달라짐
+        Chat chat = Chat.of(user, tech, chatMentor, isDefenseMode);
+        chatRepository.save(chat);
+        return chat;
     }
 
     public ChatsGetResponse findChatsByUser(UserDetailsImpl userDetails, int pageNumber, String mode) {
