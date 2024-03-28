@@ -13,7 +13,9 @@ endif::[]
 == 유저 API
 
 include::user/add-user.adoc[]
+include::user/add-user-tech.adoc[]
 
 == 채팅 API
+
 include::chat/add-chat.adoc[]
 include::chat/get-chats-by-user.adoc[]
