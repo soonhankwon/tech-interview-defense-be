@@ -25,8 +25,8 @@ public class ChatMentorService {
 
     @Value("${open-ai.model}")
     private String model;
-    private static final String CHAT_COMPLETION_ROLE_USER = "user";
-    private static final String CHAT_COMPLETION_ROLE_ASSISTANT = "assistant";
+    public static final String CHAT_COMPLETION_ROLE_USER = "user";
+    public static final String CHAT_COMPLETION_ROLE_ASSISTANT = "assistant";
 
     private final OpenAiService openAiService;
     private final ChatRepository chatRepository;
@@ -38,7 +38,8 @@ public class ChatMentorService {
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_EXISTS_CHAT_ID));
 
         // Create Default Setting ChatCompletionRequest with gpt model, mentor prompt etc
-        ChatCompletionRequest defaultCompletionRequest = ChatCompletionRequest.ofDefaultSetting(model, chat);
+        ChatCompletionRequest defaultCompletionRequest = ChatCompletionRequest.ofDefaultSetting(model, chat,
+                chat.getIsDefenseMode());
 
         // Add Past ChatMessage History in ChatCompletionRequest for Conversation flow
         ChatCompletionRequest chatCompletionRequest = getChatCompletionRequestWithPastHistory(chat,
