@@ -1,0 +1,17 @@
+=== 기술 목록조회 API
+
+==== 1. Curl Request
+
+include::{snippets}/get-techs/curl-request.adoc[]
+
+==== 2. HTTP Request
+
+include::{snippets}/get-techs/http-request.adoc[]
+
+==== 3. HTTP Request Body
+
+include::{snippets}/get-techs/request-body.adoc[]
+
+==== 4. HTTP Response Body
+
+include::{snippets}/get-techs/response-body.adoc[]
