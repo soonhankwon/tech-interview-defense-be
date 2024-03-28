@@ -6,11 +6,13 @@ import dev.techmentordefensebe.oauth.domain.OauthUserInfoImpl;
 import dev.techmentordefensebe.oauth.dto.OauthLoginResponse;
 import dev.techmentordefensebe.oauth.dto.OauthTokenDTO;
 import dev.techmentordefensebe.oauth.enumtype.OauthProvider;
+import dev.techmentordefensebe.user.domain.User;
 import dev.techmentordefensebe.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -38,26 +40,28 @@ public class OauthServiceImpl implements OauthService {
             throw new IllegalArgumentException("provider can't null or empty");
         }
         OauthProvider.validateProvider(provider);
-        assert provider.equals(OauthProvider.KAKAO.getName()) || provider.equals(OauthProvider.GOOGLE.getName());
-        // application.yml에 등록된 해당 provider(kakao, google)의 Oauth 메타정보를 불러온다.
+        assert provider.equals(OauthProvider.KAKAO.getValue()) || provider.equals(OauthProvider.GOOGLE.getValue());
+        // application.yml 에 등록된 해당 provider(kakao, google)의 Oauth 메타정보를 불러온다.
         ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId(provider);
         OauthTokenDTO oauthToken = getOauthToken(code, clientRegistration);
 
         OauthUserInfoImpl oauthUserInfo = getUserInfoFromOauth(provider, oauthToken, clientRegistration);
 
+        // 서비스에 등록된 유저인지 확인 및 토큰 발급 로직
         String email = oauthUserInfo.getEmail();
-        //isRegistered: 서비스에 이미 가입된 유저인지 여부
-        boolean isRegistered = userRepository.existsByEmail(email);
-        if (isRegistered) {
-            String accessToken = jwtProvider.createAccessToken(email);
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isPresent()) {
+            User registeredUser = optionalUser.get();
+            String accessToken = jwtProvider.createAccessToken(registeredUser);
             httpServletResponse.setHeader(HttpHeaders.AUTHORIZATION, accessToken);
 
             String refreshToken = jwtProvider.createRefreshToken(email);
             ResponseCookie cookie = cookieProvider.createCookie(refreshToken);
             httpServletResponse.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+            return OauthLoginResponse.from(oauthUserInfo, true);
         }
         //oauth 사용자 정보와 서비스 가입여부를 프론트에 응답해줌
-        return OauthLoginResponse.from(oauthUserInfo, isRegistered);
+        return OauthLoginResponse.from(oauthUserInfo, false);
     }
 
     private OauthTokenDTO getOauthToken(String code, ClientRegistration clientRegistration) {
