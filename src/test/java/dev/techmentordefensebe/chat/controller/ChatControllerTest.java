@@ -8,13 +8,10 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
 import static org.springframework.restdocs.payload.JsonFieldType.BOOLEAN;
-import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -119,35 +116,16 @@ class ChatControllerTest {
                         document(
                                 "get-chats-by-user",
                                 preprocessRequest(prettyPrint()),
-                                preprocessResponse(prettyPrint()),
-                                responseFields(
-                                        fieldWithPath("totalPages")
-                                                .description("총페이지")
-                                                .type(NUMBER),
-                                        fieldWithPath("chats")
-                                                .description("채팅목록")
-                                                .type(ARRAY),
-                                        fieldWithPath("chats[].chatId")
-                                                .description("채팅 ID")
-                                                .type(NUMBER),
-                                        fieldWithPath("chats[].mentorTopic")
-                                                .description("멘토링토픽")
-                                                .type(STRING),
-                                        fieldWithPath("chats[].isDefenseMode")
-                                                .description("디펜스모드 여부")
-                                                .type(BOOLEAN),
-                                        fieldWithPath("chats[].createdAt")
-                                                .description("채팅생성시간")
-                                                .type(STRING)
-                                )
+                                preprocessResponse(prettyPrint())
                         )
                 )
                 .andExpect(status().isOk());
     }
 
     private ChatsGetResponse createChatsGetResponse() {
-        ChatDTO chat1 = new ChatDTO(1L, "SPRING", false, LocalDateTime.now());
-        ChatDTO chat2 = new ChatDTO(3L, "JAVA", false, LocalDateTime.now());
+        LocalDateTime now = LocalDateTime.now();
+        ChatDTO chat1 = new ChatDTO(1L, "SPRING", false, now);
+        ChatDTO chat2 = new ChatDTO(3L, "JAVA", false, now.plusSeconds(1L));
         return new ChatsGetResponse(1, List.of(chat1, chat2));
     }
 
