@@ -1,0 +1,17 @@
+=== 채팅삭제 API
+
+==== 1. Curl Request
+
+include::{snippets}/delete-chat/curl-request.adoc[]
+
+==== 2. HTTP Request
+
+include::{snippets}/delete-chat/http-request.adoc[]
+
+==== 3. HTTP Request Body
+
+include::{snippets}/delete-chat/request-body.adoc[]
+
+==== 4. HTTP Response Body
+
+include::{snippets}/delete-chat/response-body.adoc[]
