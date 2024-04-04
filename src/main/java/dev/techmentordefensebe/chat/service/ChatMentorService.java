@@ -37,31 +37,32 @@ public class ChatMentorService {
         Chat chat = chatRepository.findById(chatId)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_EXISTS_CHAT_ID));
 
-        // Create Default Setting ChatCompletionRequest with gpt model, mentor prompt etc
+        // GPT model, 멘토 모드여부에 따른 멘토 프롬프트를 기본 세팅한 ChatCompletionRequest 생성
         ChatCompletionRequest defaultCompletionRequest = ChatCompletionRequest.ofDefaultSetting(model, chat,
                 chat.getIsDefenseMode());
 
-        // Add Past ChatMessage History in ChatCompletionRequest for Conversation flow
+        // 대화 흐름을 위해 과거의 멘토링 채팅 메세지 이력을 포함한 chatCompletionRequest 생성
         ChatCompletionRequest chatCompletionRequest = getChatCompletionRequestWithPastHistory(chat,
                 defaultCompletionRequest);
 
-        // Add Request's user message content(question) in ChatCompletionRequest
+        // 요청된 유저 메세지 내용을 chatCompletionRequest 에 추가
         String userMessage = request.content();
         addUserChatMessageInChatCompletionRequest(userMessage, chatCompletionRequest);
 
-        // Save userQuestion
+        // 유저 메세지 DB insert
         saveChatMessage(userMessage, chat, true);
 
-        // Request open-ai API and return Response
+        // openAI 외부 API 로 chatCompletion 전송 및 응답 리턴
         ChatCompletionResponse chatCompletionResponse = openAiService.getChatCompletion(chatCompletionRequest);
 
-        // Get Response's AI message content
+        // AI 응답 파싱
         String aiAnswer = chatCompletionResponse.choices().getFirst()
                 .message()
                 .content();
 
-        // Save Response's AI Answer
+        // AI 응답 DB insert
         saveChatMessage(aiAnswer, chat, false);
+        // API 스펙에 맞게 변환 및 리턴
         return ChatMentorAnswerResponse.from(chatCompletionResponse);
     }
 
