@@ -19,7 +19,7 @@ public class OauthController {
 
     private final OauthService oauthService;
 
-    @GetMapping("{provider}")
+    @GetMapping("/{provider}")
     public ResponseEntity<OauthLoginResponse> oauthLogin(
             @PathVariable @NotBlank(message = "provider 는 null 또는 비어있을수 없습니다.") String provider,
             @RequestParam String code,
