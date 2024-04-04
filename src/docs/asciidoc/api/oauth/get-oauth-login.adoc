@@ -1,0 +1,17 @@
+=== Oauth 로그인 API
+
+==== 1. Curl Request
+
+include::{snippets}/get-oauth-login/curl-request.adoc[]
+
+==== 2. HTTP Request
+
+include::{snippets}/get-oauth-login/http-request.adoc[]
+
+==== 3. HTTP Request Body
+
+include::{snippets}/get-oauth-login/request-body.adoc[]
+
+==== 4. HTTP Response Body
+
+include::{snippets}/get-oauth-login/response-body.adoc[]
