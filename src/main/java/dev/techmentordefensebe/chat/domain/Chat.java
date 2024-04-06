@@ -1,10 +1,7 @@
 package dev.techmentordefensebe.chat.domain;
 
-import static dev.techmentordefensebe.openai.util.PromptGenerator.HI;
-import static dev.techmentordefensebe.openai.util.PromptGenerator.INTRODUCE;
-import static dev.techmentordefensebe.openai.util.PromptGenerator.WHAT_HELP;
-
 import dev.techmentordefensebe.common.domain.BaseTimeEntity;
+import dev.techmentordefensebe.openai.util.PromptGenerator;
 import dev.techmentordefensebe.tech.domain.Tech;
 import dev.techmentordefensebe.user.domain.User;
 import jakarta.persistence.CascadeType;
@@ -57,18 +54,9 @@ public class Chat extends BaseTimeEntity {
         this.tech = tech;
         this.chatMentor = chatMentor;
         this.isDefenseMode = isDefenseMode;
-        if (isDefenseMode) {
-            this.chatMessages.add(
-                    ChatMessage.of(
-                            HI + this.tech.getName() + " 기술면접을 시작하겠습니다.",
-                            this,
-                            false)
-            );
-            return;
-        }
         this.chatMessages.add(
                 ChatMessage.of(
-                        HI + this.tech.getName() + " " + INTRODUCE + WHAT_HELP,
+                        PromptGenerator.welcomePrompt(this.tech, this.isDefenseMode),
                         this,
                         false)
         );
