@@ -5,11 +5,16 @@ import dev.techmentordefensebe.user.dto.request.UserAddRequest;
 import dev.techmentordefensebe.user.dto.request.UserTechAddRequest;
 import dev.techmentordefensebe.user.dto.response.UserAddResponse;
 import dev.techmentordefensebe.user.dto.response.UserTechAddResponse;
+import dev.techmentordefensebe.user.dto.response.UserTechDeleteResponse;
+import dev.techmentordefensebe.user.dto.response.UserTechsGetResponse;
 import dev.techmentordefensebe.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,5 +38,18 @@ public class UserController {
                                                            @RequestBody UserTechAddRequest request) {
         UserTechAddResponse res = userService.addUserTech(userDetails, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
+    }
+
+    @GetMapping("/techs")
+    public ResponseEntity<UserTechsGetResponse> getUserTech(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        UserTechsGetResponse res = userService.getUserTechs(userDetails);
+        return ResponseEntity.ok(res);
+    }
+
+    @DeleteMapping("/techs/{userTechId}")
+    public ResponseEntity<UserTechDeleteResponse> deleteUserTech(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                                 @PathVariable Long userTechId) {
+        UserTechDeleteResponse res = userService.deleteUserTech(userDetails, userTechId);
+        return ResponseEntity.ok(res);
     }
 }
