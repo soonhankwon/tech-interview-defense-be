@@ -1,0 +1,17 @@
+=== 유저기술 삭제 API
+
+==== 1. Curl Request
+
+include::{snippets}/delete-user-tech/curl-request.adoc[]
+
+==== 2. HTTP Request
+
+include::{snippets}/delete-user-tech/http-request.adoc[]
+
+==== 3. HTTP Request Body
+
+include::{snippets}/delete-user-tech/request-body.adoc[]
+
+==== 4. HTTP Response Body
+
+include::{snippets}/delete-user-tech/response-body.adoc[]

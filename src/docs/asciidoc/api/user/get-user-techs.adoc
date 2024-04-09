@@ -1,0 +1,17 @@
+=== 유저기술 목록조회 API
+
+==== 1. Curl Request
+
+include::{snippets}/get-user-techs/curl-request.adoc[]
+
+==== 2. HTTP Request
+
+include::{snippets}/get-user-techs/http-request.adoc[]
+
+==== 3. HTTP Request Body
+
+include::{snippets}/get-user-techs/request-body.adoc[]
+
+==== 4. HTTP Response Body
+
+include::{snippets}/get-user-techs/response-body.adoc[]
