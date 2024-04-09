@@ -5,6 +5,7 @@ import dev.techmentordefensebe.common.exception.CustomException;
 import dev.techmentordefensebe.common.security.impl.UserDetailsImpl;
 import dev.techmentordefensebe.oauth.enumtype.OauthProvider;
 import dev.techmentordefensebe.tech.domain.Tech;
+import dev.techmentordefensebe.tech.dto.TechDTO;
 import dev.techmentordefensebe.tech.repository.TechRepository;
 import dev.techmentordefensebe.user.domain.User;
 import dev.techmentordefensebe.user.domain.UserTech;
@@ -13,7 +14,10 @@ import dev.techmentordefensebe.user.dto.request.UserAddRequest;
 import dev.techmentordefensebe.user.dto.request.UserTechAddRequest;
 import dev.techmentordefensebe.user.dto.response.UserAddResponse;
 import dev.techmentordefensebe.user.dto.response.UserTechAddResponse;
+import dev.techmentordefensebe.user.dto.response.UserTechDeleteResponse;
+import dev.techmentordefensebe.user.dto.response.UserTechsGetResponse;
 import dev.techmentordefensebe.user.repository.UserRepository;
+import dev.techmentordefensebe.user.repository.UserTechRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,6 +30,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final TechRepository techRepository;
+    private final UserTechRepository userTechRepository;
 
     @Transactional
     public UserAddResponse addUser(UserAddRequest request) {
@@ -59,7 +64,33 @@ public class UserService {
             throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.EXISTS_DUPLICATED_TECH_NAME);
         }
         userTechs.add(userTech);
-        List<UserTechDTO> userTechDTOS = UserTechDTO.from(userTechs);
-        return UserTechAddResponse.from(userTechDTOS);
+        List<TechDTO> techDTO = TechDTO.from(userTechs);
+        return UserTechAddResponse.from(techDTO);
+    }
+
+    public UserTechsGetResponse getUserTechs(UserDetailsImpl userDetails) {
+        String email = userDetails.getEmail();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_EXISTS_USER_EMAIL));
+
+        List<UserTech> userTechs = user.getUserTechs();
+        List<UserTechDTO> dto = UserTechDTO.from(userTechs);
+
+        return UserTechsGetResponse.from(dto);
+    }
+
+    @Transactional
+    public UserTechDeleteResponse deleteUserTech(UserDetailsImpl userDetails, Long userTechId) {
+        String email = userDetails.getEmail();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_EXISTS_USER_EMAIL));
+
+        UserTech userTech = userTechRepository.findByIdAndUser(userTechId, user)
+                .orElseThrow(() -> new CustomException(HttpStatus.UNAUTHORIZED, ErrorCode.NO_AUTH));
+
+        userTechRepository.delete(userTech);
+        return UserTechDeleteResponse.from(userTechId);
     }
 }
