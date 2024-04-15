@@ -28,7 +28,7 @@ public record ChatCompletionResponse(
             Long index,
             ChatCompletionMessageDTO message,
             @JsonProperty(value = "finish_reason")
-            String finish_reason
+            String finishReason
     ) {
     }
 }
