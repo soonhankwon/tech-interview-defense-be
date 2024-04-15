@@ -7,7 +7,6 @@ import dev.techmentordefensebe.chat.dto.response.ChatDetailsGetResponse;
 import dev.techmentordefensebe.chat.dto.response.ChatsGetResponse;
 import dev.techmentordefensebe.chat.service.ChatService;
 import dev.techmentordefensebe.common.security.impl.UserDetailsImpl;
-import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -39,10 +38,8 @@ public class ChatController {
 
     @GetMapping
     public ResponseEntity<ChatsGetResponse> getChatsByUser(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                                           @RequestParam int pageNumber,
-                                                           @RequestParam(required = false)
-                                                           @Pattern(regexp = "^(mentor|defense)", message = "mode는 mentor 또는 defense만 가능합니다.") String mode) {
-        ChatsGetResponse res = chatService.findChatsByUser(userDetails, pageNumber, mode);
+                                                           @RequestParam int pageNumber) {
+        ChatsGetResponse res = chatService.findChatsByUser(userDetails, pageNumber);
         return ResponseEntity.ok().body(res);
     }
 
