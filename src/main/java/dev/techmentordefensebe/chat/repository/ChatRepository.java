@@ -12,7 +12,5 @@ import org.springframework.stereotype.Repository;
 public interface ChatRepository extends JpaRepository<Chat, Long> {
     Page<Chat> findAllByUser(User user, Pageable pageable);
 
-    Page<Chat> findAllByUserAndIsDefenseMode(User user, Boolean isDefenseMode, Pageable pageable);
-
     Optional<Chat> findByIdAndUser_Id(Long chatId, Long userId);
 }
