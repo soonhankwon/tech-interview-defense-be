@@ -31,8 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ChatService {
 
     private static final int PAGE_SIZE = 10;
-    private static final String MENTOR_MODE = "mentor";
-    private static final String DEFENSE_MODE = "defense";
 
     private final ChatRepository chatRepository;
     private final UserRepository userRepository;
@@ -49,24 +47,18 @@ public class ChatService {
         Tech tech = techRepository.findByName(request.topicTech())
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_EXISTS_TECH_NAME));
 
-        Chat chat;
         ChatMentor chatMentor = ChatMentor.from(request);
-        if (request.isDefenseMode()) {
-            chat = saveChatByIsDefenseMode(user, tech, chatMentor, true);
-            return ChatAddResponse.of(user, tech, chat);
-        }
-        chat = saveChatByIsDefenseMode(user, tech, chatMentor, false);
+        Chat chat = saveChat(user, tech, chatMentor);
         return ChatAddResponse.of(user, tech, chat);
     }
 
-    private Chat saveChatByIsDefenseMode(User user, Tech tech, ChatMentor chatMentor, boolean isDefenseMode) {
-        // isDefenseMode 여부에 따라 Chat 을 생성하는 세부 로직이 달라짐
-        Chat chat = Chat.of(user, tech, chatMentor, isDefenseMode);
+    private Chat saveChat(User user, Tech tech, ChatMentor chatMentor) {
+        Chat chat = Chat.of(user, tech, chatMentor);
         chatRepository.save(chat);
         return chat;
     }
 
-    public ChatsGetResponse findChatsByUser(UserDetailsImpl userDetails, int pageNumber, String mode) {
+    public ChatsGetResponse findChatsByUser(UserDetailsImpl userDetails, int pageNumber) {
         Long userId = userDetails.getUserId();
 
         User user = userRepository
@@ -74,24 +66,9 @@ public class ChatService {
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_EXISTS_USER_ID));
 
         PageRequest pageRequest = PageRequest.of(pageNumber, PAGE_SIZE);
-        // mode 가 null 이 아닌경우 mode 는 mentor or defense 이다.(컨트롤러 레이어에서 validation 하기 때문에)
-        if (mode != null) {
-            assert mode.equals(MENTOR_MODE) || mode.equals(DEFENSE_MODE);
-            boolean isDefenseMode = isModeDefense(mode);
-
-            // mentor or defense 모드의 조회 결과를 리턴한다.
-            Page<Chat> page = chatRepository.findAllByUserAndIsDefenseMode(user, isDefenseMode, pageRequest);
-            List<ChatDTO> chatDTOS = convertPageChatDTOS(page);
-            return ChatsGetResponse.of(page.getTotalPages(), chatDTOS);
-        }
-        // mode 가 null 인 경우 mentor, defense 모두를 포함한 조회 결과를 리턴한다.
         Page<Chat> page = chatRepository.findAllByUser(user, pageRequest);
         List<ChatDTO> chatDTOS = convertPageChatDTOS(page);
         return ChatsGetResponse.of(page.getTotalPages(), chatDTOS);
-    }
-
-    private boolean isModeDefense(String mode) {
-        return mode.equals(DEFENSE_MODE);
     }
 
     private List<ChatDTO> convertPageChatDTOS(Page<Chat> page) {
