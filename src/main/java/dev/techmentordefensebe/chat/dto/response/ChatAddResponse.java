@@ -9,7 +9,6 @@ public record ChatAddResponse(
         String techTopic,
         String mentoringLevel,
         String mentorTone,
-        boolean isDefenseMode,
         Long userId
 ) {
     public static ChatAddResponse of(User user, Tech tech, Chat chat) {
@@ -18,7 +17,6 @@ public record ChatAddResponse(
                 tech.getName(),
                 chat.getChatMentor().getMentoringLevel().getValue(),
                 chat.getChatMentor().getTone(),
-                chat.getIsDefenseMode(),
                 user.getId()
         );
     }
