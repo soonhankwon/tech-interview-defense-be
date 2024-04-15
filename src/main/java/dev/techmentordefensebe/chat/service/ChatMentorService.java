@@ -12,6 +12,7 @@ import dev.techmentordefensebe.openai.dto.ChatCompletionMessageDTO;
 import dev.techmentordefensebe.openai.dto.request.ChatCompletionRequest;
 import dev.techmentordefensebe.openai.dto.response.ChatCompletionResponse;
 import dev.techmentordefensebe.openai.service.OpenAiService;
+import dev.techmentordefensebe.openai.util.PromptGenerator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,20 +38,29 @@ public class ChatMentorService {
         Chat chat = chatRepository.findById(chatId)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_EXISTS_CHAT_ID));
 
-        // GPT model, 멘토 모드여부에 따른 멘토 프롬프트를 기본 세팅한 ChatCompletionRequest 생성
+        // GPT model, 채팅방 정보, 멘토 선질문 요청에 따른 멘토 프롬프트를 기본 세팅한 ChatCompletionRequest 생성
         ChatCompletionRequest defaultCompletionRequest = ChatCompletionRequest.ofDefaultSetting(model, chat,
-                chat.getIsDefenseMode());
+                request.isQuestionGenerated());
 
         // 대화 흐름을 위해 과거의 멘토링 채팅 메세지 이력을 포함한 chatCompletionRequest 생성
         ChatCompletionRequest chatCompletionRequest = getChatCompletionRequestWithPastHistory(chat,
                 defaultCompletionRequest);
 
-        // 요청된 유저 메세지 내용을 chatCompletionRequest 에 추가
-        String userMessage = request.content();
-        addUserChatMessageInChatCompletionRequest(userMessage, chatCompletionRequest);
-
-        // 유저 메세지 DB insert
-        saveChatMessage(userMessage, chat, true);
+        /*
+         * 1. 질문을 생성하는 요청일 경우 질문 생성 프롬프트를 만들어서 chatCompletionRequest 요청
+         * 1.1 해당 경우는 userMessage 를 DB에 저장하지 않음
+         * 2. 일반 멘토링의 경우 유저의 질문을 chatCompletionRequest 요청
+         * 2.1 해당 경우는 userMessage 를 DB에 저장함
+         */
+        String userMessage;
+        if (request.isQuestionGenerated()) {
+            userMessage = PromptGenerator.getQuestionPrompt(chat);
+            addUserChatMessageInChatCompletionRequest(userMessage, chatCompletionRequest);
+        } else {
+            userMessage = request.content();
+            addUserChatMessageInChatCompletionRequest(userMessage, chatCompletionRequest);
+            saveChatMessage(userMessage, chat, true);
+        }
 
         // openAI 외부 API 로 chatCompletion 전송 및 응답 리턴
         ChatCompletionResponse chatCompletionResponse = openAiService.getChatCompletion(chatCompletionRequest);
