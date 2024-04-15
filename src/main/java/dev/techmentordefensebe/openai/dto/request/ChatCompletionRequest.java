@@ -10,11 +10,11 @@ public record ChatCompletionRequest(
         String model,
         List<ChatCompletionMessageDTO> messages
 ) {
-    public static ChatCompletionRequest ofDefaultSetting(String model, Chat chat, boolean isDefenseMode) {
+    public static ChatCompletionRequest ofDefaultSetting(String model, Chat chat, Boolean isQuestionGenerated) {
         String mentorTopic = chat.getTech().getName();
         String mentorTone = chat.getChatMentor().getTone();
-        // isDefenseMode 여부에 따라 프롬프트가 많이 달라짐
-        String systemPrompt = PromptGenerator.getMentorSystemPrompt(mentorTopic, mentorTone, isDefenseMode);
+
+        String systemPrompt = PromptGenerator.getMentorSystemPrompt(mentorTopic, mentorTone, isQuestionGenerated);
 
         ChatCompletionMessageDTO system = ChatCompletionMessageDTO.of("system", systemPrompt);
         List<ChatCompletionMessageDTO> messages = new ArrayList<>();
