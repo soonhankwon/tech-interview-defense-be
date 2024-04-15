@@ -15,12 +15,14 @@ import dev.techmentordefensebe.tech.dto.TechDTO;
 import dev.techmentordefensebe.tech.dto.response.TechsGetResponse;
 import dev.techmentordefensebe.tech.service.TechService;
 import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -45,6 +47,7 @@ class TechControllerTest {
         mvc.perform(
                         RestDocumentationRequestBuilders.get("/api/v1/techs")
                                 .param("pageNumber", "0")
+                                .header(HttpHeaders.AUTHORIZATION, UUID.randomUUID())
                                 .with(csrf().asHeader()))
                 .andDo(print())
                 .andDo(
