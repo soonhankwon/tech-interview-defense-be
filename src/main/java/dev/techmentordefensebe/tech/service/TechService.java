@@ -7,6 +7,7 @@ import dev.techmentordefensebe.tech.repository.TechRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ public class TechService {
     private static final int PAGE_SIZE = 10;
     private final TechRepository techRepository;
 
+    @Cacheable(value = "techs:1:collections", cacheManager = "cacheManager")
     public TechsGetResponse findTechs(int pageNumber) {
         PageRequest pageRequest = PageRequest.of(pageNumber, PAGE_SIZE);
         Page<Tech> page = techRepository.findAll(pageRequest);
