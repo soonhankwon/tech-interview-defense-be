@@ -8,7 +8,6 @@ public record ChatAddRequest(
         String topicTech,
         MentoringLevel mentoringLevel,
         @NotBlank(message = "멘토링 톤은 null 또는 empty 일 수 없습니다.")
-        String mentorTone,
-        Boolean isDefenseMode
+        String mentorTone
 ) {
 }
