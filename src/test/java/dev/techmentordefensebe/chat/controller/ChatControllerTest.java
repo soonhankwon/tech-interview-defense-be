@@ -8,10 +8,6 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.JsonFieldType.BOOLEAN;
-import static org.springframework.restdocs.payload.JsonFieldType.STRING;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -64,16 +60,14 @@ class ChatControllerTest {
         String topicTech = "SPRING";
         String mentoringLevel = "BEGINNER";
         String mentorTone = "부드러움";
-        boolean isDefenseMode = false;
 
         request.put("topicTech", topicTech);
         request.put("mentoringLevel", mentoringLevel);
         request.put("mentorTone", mentorTone);
-        request.put("isDefenseMode", isDefenseMode);
 
         when(chatService.addChat(any(UserDetailsImpl.class),
                 any(ChatAddRequest.class)))
-                .thenReturn(createChatAddResponse(topicTech, mentoringLevel, mentorTone, isDefenseMode));
+                .thenReturn(createChatAddResponse(topicTech, mentoringLevel, mentorTone));
 
         mvc.perform(
                         RestDocumentationRequestBuilders.post("/api/v1/chats")
@@ -86,29 +80,21 @@ class ChatControllerTest {
                         document(
                                 "add-chat",
                                 preprocessRequest(prettyPrint()),
-                                preprocessResponse(prettyPrint()),
-                                requestFields(
-                                        fieldWithPath("topicTech").type(STRING).description("토픽기술"),
-                                        fieldWithPath("mentoringLevel").type(STRING).description("멘토링 레벨"),
-                                        fieldWithPath("mentorTone").type(STRING).description("멘토대화톤"),
-                                        fieldWithPath("isDefenseMode").type(BOOLEAN).description("디펜스모드 여부")
-                                )
+                                preprocessResponse(prettyPrint())
                         )
                 )
                 .andExpect(status().isCreated());
     }
 
-    private ChatAddResponse createChatAddResponse(String topicTech, String mentoringLevel, String mentorTone,
-                                                  boolean isDefenseMode) {
-        return new ChatAddResponse(1L, topicTech, mentoringLevel, mentorTone, isDefenseMode, 1L);
+    private ChatAddResponse createChatAddResponse(String topicTech, String mentoringLevel, String mentorTone) {
+        return new ChatAddResponse(1L, topicTech, mentoringLevel, mentorTone, 1L);
     }
 
     @DisplayName("[GET]유저채팅 목록조회 - 정상호출")
     @WithUserPrincipals
     @Test
     void getChatsByUser() throws Exception {
-        when(chatService.findChatsByUser(any(UserDetailsImpl.class),
-                anyInt(), any()))
+        when(chatService.findChatsByUser(any(UserDetailsImpl.class), anyInt()))
                 .thenReturn(createChatsGetResponse());
 
         mvc.perform(
@@ -129,8 +115,8 @@ class ChatControllerTest {
 
     private ChatsGetResponse createChatsGetResponse() {
         LocalDateTime now = LocalDateTime.now();
-        ChatDTO chat1 = new ChatDTO(1L, "SPRING", false, now);
-        ChatDTO chat2 = new ChatDTO(3L, "JAVA", false, now.plusSeconds(1L));
+        ChatDTO chat1 = new ChatDTO(1L, "SPRING", now);
+        ChatDTO chat2 = new ChatDTO(3L, "JAVA", now.plusSeconds(1L));
         return ChatsGetResponse.of(1, List.of(chat1, chat2));
     }
 
