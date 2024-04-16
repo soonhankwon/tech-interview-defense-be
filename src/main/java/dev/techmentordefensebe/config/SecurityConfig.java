@@ -1,7 +1,6 @@
 package dev.techmentordefensebe.config;
 
 import dev.techmentordefensebe.common.security.filter.JwtVerificationFilter;
-import dev.techmentordefensebe.common.util.JwtProvider;
 import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +24,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
-    private final JwtProvider jwtProvider;
+    
+    private final JwtVerificationFilter jwtVerificationFilter;
 
     private static final String[] AUTH_WHITELIST = {
             "/api/v1/oauth/**",
@@ -50,7 +49,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new JwtVerificationFilter(jwtProvider),
+                .addFilterBefore(jwtVerificationFilter,
                         UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
