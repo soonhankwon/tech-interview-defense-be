@@ -18,6 +18,7 @@
     - 질문에 대한 유저의 답변이 정확하지 않다면 꼬리 질문을 합니다.
 - 유저 가입 및 카카오, 구글 Oauth 로그인 API
 - 유저 정보 수정 API
+- 기술 주제별 채팅(멘토링) 생성 및 삭제 API
 - 기술 목록 조회 API
 
 ## 기술스택
@@ -25,12 +26,12 @@
 ### 언어 및 의존성
 
 - Java 21 Amazon Corretto
-- SpringBoot 3.2.1
-- Spring Data JPA 3.2.1
-- Spring Validation 3.2.1
-- Spring Data Redis 3.2.1
+- SpringBoot 3.2.3
+- Spring Data JPA 3.2.3
+- Spring Validation 3.2.3
+- Spring Data Redis 3.2.3
 - Spring RestDocs 3.0.1
-- Spring Security 6.2.1
+- Spring Security 6.2.2
 - JJWT 0.12.3
 - JUnit5, Mockito
 - Apache Jmeter
