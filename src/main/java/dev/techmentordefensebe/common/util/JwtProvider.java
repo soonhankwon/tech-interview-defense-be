@@ -1,9 +1,15 @@
 package dev.techmentordefensebe.common.util;
 
+import dev.techmentordefensebe.common.enumtype.ErrorCode;
 import dev.techmentordefensebe.user.domain.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SecurityException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -55,11 +61,17 @@ public class JwtProvider {
     }
 
     public Claims getClaims(String accessToken) {
-        return Jwts.parser()
-                .verifyWith(getSecretKey())
-                .build()
-                .parseSignedClaims(accessToken)
-                .getPayload();
+        try {
+            return Jwts.parser()
+                    .verifyWith(getSecretKey())
+                    .build()
+                    .parseSignedClaims(accessToken)
+                    .getPayload();
+        } catch (SecurityException | MalformedJwtException e) {
+            throw new JwtException(ErrorCode.JWT_INVALID_SIGNATURE.getMessage());
+        } catch (ExpiredJwtException | UnsupportedJwtException e) {
+            throw new JwtException(ErrorCode.JWT_EXPIRED.getMessage());
+        }
     }
 
     private SecretKey getSecretKey() {
