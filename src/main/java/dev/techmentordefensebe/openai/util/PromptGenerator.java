@@ -12,7 +12,8 @@ public class PromptGenerator {
     private static final String YOU = "당신은 ";
     private static final String INTERVIEWER_RULE_1 = "면접상황과 맞지 않는 말은 하지 말아주세요.";
     private static final String INTERVIEWER_RULE_2 = "질문은 꼭 1개만 해주세요.";
-    private static final String INTERVIEWER_RULE_3 = "상대방의 답변의 정확성이 부정확하다면 꼭 추가적인 질문을 해주세요.";
+    private static final String INTERVIEWER_RULE_3 = "상대방의 답변의 정확성이 매우 부정확하다면 꼭 추가적인 질문을 1개 해주세요.";
+    private static final String INTERVIEWER_RULE_4 = "상대방의 답변에 대한 간결한 피드백을 해주세요.";
 
     public static String welcomePrompt(Tech tech) {
         return HI + tech.getName() + MENTOR + WHAT_HELP;
@@ -23,8 +24,12 @@ public class PromptGenerator {
                                                final Boolean isQuestionGenerated) {
 
         if (!isQuestionGenerated) {
-            return YOU + mentorTopic + PROFESSIONAL + mentorTone + "하게 답변해주세요.";
+            return YOU + mentorTopic + PROFESSIONAL + mentorTone + "하게 답변해주세요." +
+                    "만약 상대방이 질문이 아닌 답변을 한다면" +
+                    INTERVIEWER_RULE_3 +
+                    INTERVIEWER_RULE_4;
         }
+        
         return YOU + mentorTopic + INTERVIEWER + "현재 면접자를 기술 면접하는 상황입니다."
                 + mentorTone + "하게 질문해주세요." +
                 INTERVIEWER_RULE_1 +
