@@ -1,5 +1,7 @@
 package dev.techmentordefensebe.common.security.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.techmentordefensebe.common.dto.response.ErrorResponse;
 import dev.techmentordefensebe.common.security.impl.UserDetailsImpl;
 import dev.techmentordefensebe.common.util.JwtProvider;
 import io.jsonwebtoken.Claims;
@@ -12,16 +14,21 @@ import java.io.IOException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+@Component
 @RequiredArgsConstructor
 public class JwtVerificationFilter extends OncePerRequestFilter {
 
     private static final String JWT_PREFIX = "Bearer ";
     private final JwtProvider jwtProvider;
+    private final ObjectMapper objectMapper;
 
     @Override
     protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
@@ -36,10 +43,13 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         try {
             setAuthenticationToContext(request, response);
+            filterChain.doFilter(request, response);
         } catch (JwtException e) {
-            request.setAttribute("exception", "invalid jwt");
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(objectMapper.writeValueAsString(ErrorResponse.from(e)));
         }
-        filterChain.doFilter(request, response);
     }
 
     private void setAuthenticationToContext(HttpServletRequest request, HttpServletResponse response) {
