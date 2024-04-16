@@ -3,6 +3,8 @@ package dev.techmentordefensebe.common.dto.response;
 import dev.techmentordefensebe.common.enumtype.ErrorCode;
 import dev.techmentordefensebe.common.exception.CustomException;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.method.ParameterValidationResult;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 public record ErrorResponse(
         int code,
@@ -15,6 +17,16 @@ public record ErrorResponse(
             return new ErrorResponse(
                     errorCode.getCode(),
                     errorCode.getMessage()
+            );
+        }
+        if (exception instanceof HandlerMethodValidationException handlerMethodValidationException) {
+            ParameterValidationResult parameterValidationResult = handlerMethodValidationException.getAllValidationResults()
+                    .getFirst();
+
+            String defaultMessage = parameterValidationResult.getResolvableErrors().getFirst().getDefaultMessage();
+            return new ErrorResponse(
+                    HttpStatus.BAD_REQUEST.value(),
+                    defaultMessage
             );
         }
         if (exception instanceof RuntimeException runtimeException) {
