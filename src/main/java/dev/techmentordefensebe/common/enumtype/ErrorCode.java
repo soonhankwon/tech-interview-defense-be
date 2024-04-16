@@ -15,7 +15,10 @@ public enum ErrorCode {
     EXISTS_DUPLICATED_TECH_NAME(4005, "중복된 기술 이름이 존재합니다."),
     NOT_EXISTS_USER_ID(4006, "유저 ID가 존재하지 않습니다."),
     NOT_EXISTS_CHAT_ID_WITH_USER(4007, "유저 ID의 채팅 ID가 존재하지 않습니다."),
-    NO_AUTH(4008, "권한이 없습니다.");
+    NO_AUTH(4008, "권한이 없습니다."),
+    FORBIDDEN(4009, "접근이 금지된 경로입니다."),
+    JWT_INVALID_SIGNATURE(4010, "잘못된 JWT 서명입니다."),
+    JWT_EXPIRED(4011, "만료된 JWT 입니다.");
 
     private final int code;
     private final String message;
