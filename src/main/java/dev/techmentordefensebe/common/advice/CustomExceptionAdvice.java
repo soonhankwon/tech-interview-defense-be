@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @Slf4j
@@ -30,6 +31,13 @@ public class CustomExceptionAdvice {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     protected ResponseEntity<ErrorResponse> handleMethodArgTypeMismatchException(
             MethodArgumentTypeMismatchException exception) {
+        ErrorResponse res = ErrorResponse.from(exception);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+    }
+
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    protected ResponseEntity<ErrorResponse> handleMethodValidationException(
+            HandlerMethodValidationException exception) {
         ErrorResponse res = ErrorResponse.from(exception);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
