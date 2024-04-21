@@ -16,6 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import dev.techmentordefensebe.annotation.WithUserPrincipals;
 import dev.techmentordefensebe.common.security.impl.UserDetailsImpl;
+import dev.techmentordefensebe.common.util.JwtProvider;
 import dev.techmentordefensebe.oauth.enumtype.OauthProvider;
 import dev.techmentordefensebe.tech.dto.TechDTO;
 import dev.techmentordefensebe.user.dto.UserTechDTO;
@@ -50,6 +51,9 @@ class UserControllerTest {
 
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private JwtProvider jwtProvider;
 
     @DisplayName("[POST]유저등록 - 정상호출")
     @WithUserPrincipals

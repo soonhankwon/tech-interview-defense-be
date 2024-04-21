@@ -22,6 +22,7 @@ import dev.techmentordefensebe.chat.dto.response.ChatDetailsGetResponse;
 import dev.techmentordefensebe.chat.dto.response.ChatsGetResponse;
 import dev.techmentordefensebe.chat.service.ChatService;
 import dev.techmentordefensebe.common.security.impl.UserDetailsImpl;
+import dev.techmentordefensebe.common.util.JwtProvider;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -51,6 +52,9 @@ class ChatControllerTest {
 
     @MockBean
     private ChatService chatService;
+
+    @MockBean
+    private JwtProvider jwtProvider;
 
     @DisplayName("[POST]채팅추가 - 정상호출")
     @WithUserPrincipals

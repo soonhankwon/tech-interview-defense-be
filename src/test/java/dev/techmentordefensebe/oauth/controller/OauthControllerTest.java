@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import dev.techmentordefensebe.annotation.WithUserPrincipals;
+import dev.techmentordefensebe.common.util.JwtProvider;
 import dev.techmentordefensebe.oauth.dto.OauthLoginResponse;
 import dev.techmentordefensebe.oauth.service.OauthService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,6 +36,9 @@ class OauthControllerTest {
 
     @MockBean
     private OauthService oauthService;
+
+    @MockBean
+    private JwtProvider jwtProvider;
 
     @DisplayName("[GET]Oauth 로그인 - 정상호출")
     @WithUserPrincipals

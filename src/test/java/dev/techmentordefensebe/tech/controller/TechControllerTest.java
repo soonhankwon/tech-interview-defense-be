@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import dev.techmentordefensebe.annotation.WithUserPrincipals;
+import dev.techmentordefensebe.common.util.JwtProvider;
 import dev.techmentordefensebe.tech.dto.TechDTO;
 import dev.techmentordefensebe.tech.dto.response.TechsGetResponse;
 import dev.techmentordefensebe.tech.service.TechService;
@@ -36,6 +37,9 @@ class TechControllerTest {
 
     @MockBean
     private TechService techService;
+
+    @MockBean
+    private JwtProvider jwtProvider;
 
     @DisplayName("[GET]기술목록조회 - 정상호출")
     @WithUserPrincipals
