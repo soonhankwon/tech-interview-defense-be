@@ -3,7 +3,6 @@ package dev.techmentordefensebe.user.service;
 import dev.techmentordefensebe.common.enumtype.ErrorCode;
 import dev.techmentordefensebe.common.exception.CustomException;
 import dev.techmentordefensebe.common.security.impl.UserDetailsImpl;
-import dev.techmentordefensebe.oauth.enumtype.OauthProvider;
 import dev.techmentordefensebe.tech.domain.Tech;
 import dev.techmentordefensebe.tech.dto.TechDTO;
 import dev.techmentordefensebe.tech.repository.TechRepository;
@@ -34,8 +33,8 @@ public class UserService {
 
     @Transactional
     public UserAddResponse addUser(UserAddRequest request) {
-        if (request.oauthLoginType() == OauthProvider.NONE) {
-            //TODO email 인증 로직
+        if (userRepository.existsByEmail(request.email())) {
+            throw new CustomException(HttpStatus.CONFLICT, ErrorCode.EXISTS_DUPLICATED_EMAIL);
         }
         User user = User.toEntity(request);
         userRepository.save(user);
