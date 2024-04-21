@@ -1,0 +1,17 @@
+=== 멘토링 API
+
+==== 1. Curl Request
+
+include::{snippets}/get-mentor-answer/curl-request.adoc[]
+
+==== 2. HTTP Request
+
+include::{snippets}/get-mentor-answer/http-request.adoc[]
+
+==== 3. HTTP Request Body
+
+include::{snippets}/get-mentor-answer/request-body.adoc[]
+
+==== 4. HTTP Response Body
+
+include::{snippets}/get-mentor-answer/response-body.adoc[]
