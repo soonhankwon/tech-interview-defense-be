@@ -39,7 +39,7 @@
 
 ## api 명세서
 
-- RestDocs:
+- RestDocs: http://localhost:8080/docs/api/api-document.html
 
 ## 핵심문제 해결과정 및 전략
 
