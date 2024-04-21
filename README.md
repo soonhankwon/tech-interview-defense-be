@@ -8,6 +8,16 @@
 - IT 기술에 대한 정확하고 이해하기 쉬운 멘토링 니즈와 기술 면접 질문 준비 요구를 해결하기 위해 만든 API 입니다.
 - 2023 스파르타 해커톤 AI 부분 2위 프로젝트로 2024년 3월 현재 RestAPI 로 리팩토링 및 스프링부트 3.0, 자바 21로 마이그레이션 중입니다.
 
+<!-- 스크린샷 -->
+
+### :camera: 스크린샷
+
+<div align="center"> 
+  <img src="https://github.com/soonhankwon/dev-space-x-backend/assets/113872320/0a7a7f3b-b7d0-4e62-a6e0-bef64cf2149e" width="200" height="300" alt="screenshot"/>
+  <img src="https://github.com/soonhankwon/dev-space-x-backend/assets/113872320/114c4e79-fef2-4b56-82a2-23bcfa90c9dd" width="200" height="300" alt="screenshot"/>
+  <img src="https://github.com/soonhankwon/dev-space-x-backend/assets/113872320/d8e3e9b6-5181-4843-a1b7-a26bfdd9d2b4" width="200" height="300" alt="screenshot"/>
+</div>
+
 <!-- 핵심기능 -->
 
 ### :dart: 핵심기능
