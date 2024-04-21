@@ -24,13 +24,14 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    
+
     private final JwtVerificationFilter jwtVerificationFilter;
 
     private static final String[] AUTH_WHITELIST = {
             "/api/v1/oauth/**",
             "/api/v1/users",
-            "/api/test/**"
+            "/api/test/**",
+            "/docs/**"
     };
 
     @Bean
