@@ -20,6 +20,10 @@ include::user/add-user-tech.adoc[]
 include::chat/add-chat.adoc[]
 include::chat/get-chats-by-user.adoc[]
 
+== 멘토링 API
+
+include::chat-mentor/get-mentor-answer.adoc[]
+
 == 기술 API
 
 include::tech/get-techs.adoc[]
