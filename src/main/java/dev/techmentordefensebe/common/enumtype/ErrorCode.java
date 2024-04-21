@@ -18,7 +18,8 @@ public enum ErrorCode {
     NO_AUTH(4008, "권한이 없습니다."),
     FORBIDDEN(4009, "접근이 금지된 경로입니다."),
     JWT_INVALID_SIGNATURE(4010, "잘못된 JWT 서명입니다."),
-    JWT_EXPIRED(4011, "만료된 JWT 입니다.");
+    JWT_EXPIRED(4011, "만료된 JWT 입니다."),
+    EXISTS_DUPLICATED_EMAIL(4012, "중복된 이메일이 존재합니다.");
 
     private final int code;
     private final String message;
